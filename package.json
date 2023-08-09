@@ -1,0 +1,19 @@
+{
+  "name": "12_study-matching-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dpqls0356/study-matching-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dpqls0356/study-matching-service/issues"
+  },
+  "homepage": "https://github.com/dpqls0356/study-matching-service#readme"
+}
