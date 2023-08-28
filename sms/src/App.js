@@ -28,11 +28,15 @@ footer, header, hgroup, main, menu, nav, section {
   display: block;
 }
 /* HTML5 hidden-attribute fix for newer browsers */
+*{
+  box-sizing: border-box;
+}
 *[hidden] {
     display: none;
 }
 body {
   line-height: 1;
+  background-color: #EAF7FF;
 }
 menu, ol, ul {
   list-style: none;
@@ -54,7 +58,7 @@ function App() {
   return (
     <div className="App">
       <GlobalStyle />
-      <Headers/>
+      <Header/>
       <Outlet/>
     </div>
   );
