@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 import { styled } from "styled-components";
 import defaultProfileImg from "../../image/defaultProfileImg.png";
 const Wrapper  = styled.div`
@@ -50,10 +52,20 @@ const SubmitBtn  = styled.input`
     margin-top:30px ;
     height: 40px;
 `
+const Error = styled.div`
+`
 function Join(){
     const [gender,setGender] = useState("");
+    const [checkGender, setCheckGender] = useState(false);
+    const [genderError,setGenderError] = useState(false);
+    const [passwordError,setPasswordError]=useState(false);
     const {register,handleSubmit} = useForm();
-    const createAccount = (data)=>{
+    const navigate = useNavigate();
+    useEffect(()=>{
+        setGender("");
+        setCheckGender(false);
+    },[])
+    const createAccount = async(data)=>{
         const {
             username,
             userid,
@@ -61,44 +73,76 @@ function Join(){
             ckpassword,
             email,birth,address
         } = data;
+        var img;
+        // 체킹해야하는 부분
+        if(checkGender === false){
+            setGenderError(true);
+            
+        }
+        else if(data.password!==data.ckpassword){
+            setPasswordError(true);
+            
+        }
+        else{
+            if(data.img.length===0){
+                img = "defaultProfileImg.png";
+            }
+            else{
+                img = data.img[0].name;
+            }
+            const response = await axios.post("http://localhost:8080/join",{
+                username,
+                userid,
+                password,
+                ckpassword,
+                email,birth,address,gender,img
+            });
+            if(response){
+                if(response.status===201){
+                    navigate('/login');
+                }
+            }
+        }
     }
     return (
         <Wrapper>
             <JoinForm onSubmit={handleSubmit(createAccount)}>
                 <ProfileImg src={defaultProfileImg}/>
-                <Input {...register("img")} id="profile-photo" type="file"/>
+                <Input {...register("img")} id="profilePhoto" type="file"/>
                 <InputDiv>
                     <Label htmlFor="username">이름</Label>
-                    <Input {...register("username")} id="username" type="text" placeholder="이름을 입력하세요" />
+                    <Input {...register("username")} required={true} id="username" type="text" placeholder="이름을 입력하세요" />
                 </InputDiv>
                 <InputDiv>
                     <Label htmlFor="userid">아이디</Label>
-                    <Input {...register("userid")} id="userid" type="text" placeholder="아이디를 입력하세요"/>
+                    <Input {...register("userid")} required={true} id="userid" type="text" placeholder="아이디를 입력하세요"/>
                 </InputDiv>
+                {passwordError?<Error>비밀번호가 일치하지않습니다. 다시 입력하세요</Error>:null}
                 <InputDiv>
                     <Label htmlFor="password">비밀번호</Label>
-                    <Input {...register("password")} id="password" type="password" placeholder="비밀번호를 입력하세요" />
+                    <Input {...register("password")} required={true} id="password" type="password" placeholder="비밀번호를 입력하세요" />
                 </InputDiv>
                 <InputDiv>
                     <Label htmlFor="ckpassword">비밀번호 확인</Label>
-                    <Input {...register("ckpassword")} id="ckpassword" type="password" placeholder="비밀번호를 다시 입력해주세요"/>
+                    <Input {...register("ckpassword")} required={true} id="ckpassword" type="password" placeholder="비밀번호를 다시 입력해주세요"/>
                 </InputDiv>
                 <InputDiv>
                     <Label htmlFor="email">이메일</Label>
-                    <Input {...register("email")} id="email" type="email" placeholder="이메일을 입력하세요"/>
+                    <Input {...register("email")} required={true}  id="email" type="email" placeholder="이메일을 입력하세요"/>
                 </InputDiv>
                 <InputDiv>
                     <Label htmlFor="birth">생년월일</Label>
-                    <Input {...register("birth")} id="birth" type="date" />
+                    <Input {...register("birth")} required={true} id="birth" type="date" />
                 </InputDiv>
+                {genderError?<Error>성별을 선택해주세요</Error>:null}
                 <InputDiv>
                     <Label>성별</Label>
-                    <GenderBtn onClick={()=>setGender("male")}>남</GenderBtn>
-                    <GenderBtn onClick={()=>setGender("female")}>여</GenderBtn>
+                    <GenderBtn onClick={()=>{setGender("male");setCheckGender(!checkGender);}}>남</GenderBtn>
+                    <GenderBtn onClick={()=>{setGender("female");setCheckGender(!checkGender);}}>여</GenderBtn>
                 </InputDiv>
                 <InputDiv>
                     <Label htmlFor="address">주소</Label>
-                    <Input {...register("address")} id="address" type="text" placeholder="주소를 입력하세요" />
+                    <Input {...register("address")} required={true}  id="address" type="text" placeholder="주소를 입력하세요" />
                 </InputDiv>
                 <SubmitBtn type="submit" value="계정생성"></SubmitBtn>
             </JoinForm>
