@@ -1,7 +1,7 @@
-import User from "../Models/UserModel";
+import User from "../Models/UserModel.js";
 
 export const joinUser = async (req, res) => {
-  console.log("Post Join");
+  console.log(req.body);
   try {
     const newUser = await User.create(req.body);
     res.status(201).json({ message: "회원가입 성공", user: newUser });
