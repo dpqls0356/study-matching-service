@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
   userid: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   birth: { type: Date, required: true },
-  sex: { type: String, required: true },
+  gender: { type: String, required: true },
   address: { type: String, required: true },
   email: {
     type: String,
@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
       message: (props) => `${props.value}은(는) 올바른 이메일 형식이 아닙니다.`,
     },
   },
-  img: { type: String },
+  profile: { type: String },
 });
 userSchema.pre("save", async function () {
   try {
