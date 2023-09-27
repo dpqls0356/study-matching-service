@@ -16,13 +16,13 @@ const Wrapper  = styled.div`
     /*%로 하여 남은 화면부분 중 퍼센트로 가져갈 수 있도록 함  */
     align-items: center;
     justify-content: center;
-`
+`;
 const JoinForm = styled.form`  
     height:max-content;
     width: 500px;
     display: flex;
     flex-direction: column;
-`
+`;
 const ProfileImg = styled.img`
   width: 80px;
   height: 80px;
@@ -109,7 +109,6 @@ function Join(){
             }
         }
     }
-  };
   return (
     <Wrapper>
       <JoinForm onSubmit={handleSubmit(createAccount)}>
