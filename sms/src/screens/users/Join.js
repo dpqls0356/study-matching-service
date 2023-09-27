@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { styled } from "styled-components";
 import defaultProfileImg from "../../image/defaultProfileImg.png";
+import {BASE_URL} from "../../api.js";
 const Wrapper  = styled.div`
     padding: 100px 0px 100px 0px;
     display: flex;
@@ -90,17 +91,21 @@ function Join(){
             else{
                 img = data.img[0].name;
             }
-            const response = await axios.post("http://localhost:8080/join",{
-                username,
-                userid,
-                password,
-                ckpassword,
-                email,birth,address,gender,img
-            });
-            if(response){
+            try{
+                const response = await axios.post(`${BASE_URL}/join`,{
+                    username,
+                    userid,
+                    password,
+                    ckpassword,
+                    email,birth,address,gender,img
+                });
                 if(response.status===201){
                     navigate('/login');
                 }
+            }
+            catch(error){
+                //여러가지 에러 받아와서 처리하기
+                alert(error.response);
             }
         }
     }
