@@ -6,7 +6,6 @@ import {
   finishKakaoLogin,
   joinUser,
   loginUser,
-  startKakaoLogin,
 } from "./Controllers/UserController.js";
 
 const app = express();
@@ -23,7 +22,7 @@ app.use(
 
 app.post("/join", joinUser);
 app.post("/login", loginUser);
-app.get("/kakaologin", startKakaoLogin);
+//app.get("/kakaologin", startKakaoLogin);
 app.get("/checkKakaoLogin", finishKakaoLogin);
 
 const handleServer = () => {
