@@ -84,19 +84,35 @@ function Login() {
       alert(error.response);
     }
   };
+  console.log(process.env.REACT_APP_KAKAO_API_KEY);
+  const startKakaoLogin = async () => {
+    const config = {
+      response_type: "code",
+      client_id: process.env.REACT_APP_KAKAO_API_KEY,
+      redirect_uri: process.env.REACT_APP_KAKAO_REDIRECT_URI,
+    };
+    const params = new URLSearchParams(config).toString();
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?${params}`;
+  };
+
   const postSocialLogin = async (social) => {
     console.log(social);
-    try {
-      const response = await axios.get(`${BASE_URL}/${social}login`);
-      if (response.status === 201) {
-        //react에서 세션 유지하는 방법 알아보기이이이~
-        navigate("/");
-      }
-    } catch (error) {
-      //여러가지 에러 받아와서 처리하기
-      alert(error.response);
-      console.log(error);
+    if (social === "kakao") {
+      startKakaoLogin();
+    } else if (social === "google") {
     }
+
+    // try {
+    //   const response = await axios.get(`${BASE_URL}/${social}login`);
+    //   if (response.status === 201) {
+    //     //react에서 세션 유지하는 방법 알아보기이이이~
+    //     navigate("/");
+    //   }
+    // } catch (error) {
+    //   //여러가지 에러 받아와서 처리하기
+    //   alert(error.response);
+    //   console.log(error);
+    // }
   };
   return (
     <Wrapper>
