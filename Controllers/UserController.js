@@ -32,16 +32,16 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: "서버 오류" });
   }
 };
-export const startKakaoLogin = async (req, res) => {
-  const config = {
-    response_type: "code",
-    client_id: process.env.KAKAO_API_KEY,
-    redirect_uri: process.env.KAKAO_REDIRECT_URI,
-  };
-  const params = new URLSearchParams(config).toString();
-  const baseUrl = `https://kauth.kakao.com/oauth/authorize?${params}`;
-  return res.redirect(baseUrl);
-};
+// export const startKakaoLogin = async (req, res) => {
+//   const config = {
+//     response_type: "code",
+//     client_id: process.env.KAKAO_API_KEY,
+//     redirect_uri: process.env.KAKAO_REDIRECT_URI,
+//   };
+//   const params = new URLSearchParams(config).toString();
+//   const baseUrl = `https://kauth.kakao.com/oauth/authorize?${params}`;
+//   return res.redirect(baseUrl);
+// };
 export const finishKakaoLogin = async (req, res) => {
   console.log(1);
   const config = {
