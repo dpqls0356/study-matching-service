@@ -4,24 +4,24 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
 import defaultProfileImg from "../../image/defaultProfileImg.png";
-import { BASE_URL } from "../../api";
-const Wrapper = styled.div`
-  padding: 100px 0px 100px 0px;
-  display: flex;
-  width: 100%;
-  height: 90%;
-  /* height: 100%; -> 이걸 어떻게 할 것인가 -> 헤더를 고정 시키기 ?*/
-  /*헤더를 position으로 고정시키기까지함 ->*/
-  /*vh로 하게되면 작은 화면에서도 주어진 값만큼의 공간을 가지려해서 헤더부분을 침범 */
-  /*%로 하여 남은 화면부분 중 퍼센트로 가져갈 수 있도록 함  */
-  align-items: center;
-  justify-content: center;
+import {BASE_URL} from "../../api.js";
+const Wrapper  = styled.div`
+    padding: 100px 0px 100px 0px;
+    display: flex;
+    width:100%;
+    height: 90%;
+    /* height: 100%; -> 이걸 어떻게 할 것인가 -> 헤더를 고정 시키기 ?*/
+    /*헤더를 position으로 고정시키기까지함 ->*/
+    /*vh로 하게되면 작은 화면에서도 주어진 값만큼의 공간을 가지려해서 헤더부분을 침범 */
+    /*%로 하여 남은 화면부분 중 퍼센트로 가져갈 수 있도록 함  */
+    align-items: center;
+    justify-content: center;
 `;
-const JoinForm = styled.form`
-  height: max-content;
-  width: 500px;
-  display: flex;
-  flex-direction: column;
+const JoinForm = styled.form`  
+    height:max-content;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
 `;
 const ProfileImg = styled.img`
   width: 80px;
@@ -46,58 +46,69 @@ const Label = styled.label`
   margin: 10px 0px;
 `;
 const GenderBtn = styled.div`
-  width: 35%;
-  height: 30px;
-`;
-const SubmitBtn = styled.input`
-  margin-top: 30px;
-  height: 40px;
-`;
-const Error = styled.div``;
-function Join() {
-  const [gender, setGender] = useState("");
-  const [checkGender, setCheckGender] = useState(false);
-  const [genderError, setGenderError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const { register, handleSubmit } = useForm();
-  const navigate = useNavigate();
-  useEffect(() => {
-    setGender("");
-    setCheckGender(false);
-  }, []);
-  const createAccount = async (data) => {
-    const { username, userid, password, ckpassword, email, birth, address } =
-      data;
-    var img;
-    // 체킹해야하는 부분
-    if (checkGender === false) {
-      setGenderError(true);
-    } else if (data.password !== data.ckpassword) {
-      setPasswordError(true);
-    } else {
-      if (data.img.length === 0) {
-        img = "defaultProfileImg.png";
-      } else {
-        img = data.img[0].name;
-      }
-      try {
-        const response = await axios.post(`${BASE_URL}/join`, {
-          username,
-          userid,
-          password,
-          ckpassword,
-          email,
-          birth,
-          address,
-          gender,
-          img,
-        });
-        navigate("/login");
-      } catch (error) {
-        alert(error.response);
-      }
+    width: 35%;
+    height: 30px;
+`
+const SubmitBtn  = styled.input`
+    margin-top:30px ;
+    height: 40px;
+`
+const Error = styled.div`
+`
+function Join(){
+    const [gender,setGender] = useState("");
+    const [checkGender, setCheckGender] = useState(false);
+    const [genderError,setGenderError] = useState(false);
+    const [passwordError,setPasswordError]=useState(false);
+    const {register,handleSubmit} = useForm();
+    const navigate = useNavigate();
+    useEffect(()=>{
+        setGender("");
+        setCheckGender(false);
+    },[])
+    const createAccount = async(data)=>{
+        const {
+            username,
+            userid,
+            password,
+            ckpassword,
+            email,birth,address
+        } = data;
+        var img;
+        // 체킹해야하는 부분
+        if(checkGender === false){
+            setGenderError(true);
+            
+        }
+        else if(data.password!==data.ckpassword){
+            setPasswordError(true);
+            
+        }
+        else{
+            if(data.img.length===0){
+                img = "defaultProfileImg.png";
+            }
+            else{
+                img = data.img[0].name;
+            }
+            try{
+                const response = await axios.post(`${BASE_URL}/join`,{
+                    username,
+                    userid,
+                    password,
+                    ckpassword,
+                    email,birth,address,gender,img
+                });
+                if(response.status===201){
+                    navigate('/login');
+                }
+            }
+            catch(error){
+                //여러가지 에러 받아와서 처리하기
+                alert(error.response);
+            }
+        }
     }
-  };
   return (
     <Wrapper>
       <JoinForm onSubmit={handleSubmit(createAccount)}>
