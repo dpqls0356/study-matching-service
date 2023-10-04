@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/dpqls0356/study-matching-service#readme",
   "dependencies": {
+    "axios": "^1.5.1",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
