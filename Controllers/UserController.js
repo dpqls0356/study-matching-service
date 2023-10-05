@@ -1,3 +1,4 @@
+import axios from "axios";
 import User from "../Models/UserModel.js";
 
 export const joinUser = async (req, res) => {
@@ -43,7 +44,6 @@ export const loginUser = async (req, res) => {
 //   return res.redirect(baseUrl);
 // };
 export const finishKakaoLogin = async (req, res) => {
-  console.log(1);
   const config = {
     grant_type: "authorization_code",
     code: req.query.code,
@@ -52,7 +52,7 @@ export const finishKakaoLogin = async (req, res) => {
     client_secret: process.env.KAKAO_CLIENT_SECRET,
   };
   const params = new URLSearchParams(config).toString();
-  const baseUrl = `https://kauth.kakao.com/oauth/authorize?${params}`;
+  const baseUrl = `https://kauth.kakao.com/oauth/token?${params}`;
 
   const json = await (
     await fetch(baseUrl, {
@@ -72,5 +72,5 @@ export const finishKakaoLogin = async (req, res) => {
     })
   ).json();
 
-  console.log(data);
+  //console.log("dd", data);
 };
