@@ -1,3 +1,5 @@
 sms/node_modules
 /node_modules
 이론공부
+.env
+sms/.env
