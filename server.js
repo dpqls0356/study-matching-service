@@ -3,8 +3,8 @@ import express from "express";
 import cors from "cors";
 import "./db.js";
 import {
-  finishKakaoLogin,
   joinUser,
+  kakaoLoginUser,
   loginUser,
 } from "./Controllers/UserController.js";
 
@@ -22,8 +22,7 @@ app.use(
 
 app.post("/join", joinUser);
 app.post("/login", loginUser);
-//app.get("/kakaologin", startKakaoLogin);
-app.get("/checkKakaoLogin", finishKakaoLogin);
+app.post("/login/kakao", kakaoLoginUser);
 
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
