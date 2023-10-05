@@ -1,4 +1,3 @@
-import axios from "axios";
 import User from "../Models/UserModel.js";
 
 export const joinUser = async (req, res) => {
@@ -33,44 +32,14 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: "서버 오류" });
   }
 };
-// export const startKakaoLogin = async (req, res) => {
-//   const config = {
-//     response_type: "code",
-//     client_id: process.env.KAKAO_API_KEY,
-//     redirect_uri: process.env.KAKAO_REDIRECT_URI,
-//   };
-//   const params = new URLSearchParams(config).toString();
-//   const baseUrl = `https://kauth.kakao.com/oauth/authorize?${params}`;
-//   return res.redirect(baseUrl);
-// };
-export const finishKakaoLogin = async (req, res) => {
-  const config = {
-    grant_type: "authorization_code",
-    code: req.query.code,
-    client_id: process.env.KAKAO_API_KEY,
-    redirect_uri: process.env.KAKAO_REDIRECT_URI,
-    client_secret: process.env.KAKAO_CLIENT_SECRET,
-  };
-  const params = new URLSearchParams(config).toString();
-  const baseUrl = `https://kauth.kakao.com/oauth/token?${params}`;
 
-  const json = await (
-    await fetch(baseUrl, {
-      method: "POST",
-    })
-  ).json();
-
-  const { access_token } = json;
-
-  const data = await (
-    await fetch(`https://kapi.kakao.com/v2/user/me`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-      },
-    })
-  ).json();
-
-  //console.log("dd", data);
+export const kakaoLoginUser = async (req, res) => {
+  console.log("check", req.body);
+  try {
+    res.status(201).json({ message: "카카오 로그인 성공" });
+  } catch (erorr) {
+    return res.status(500).json({ message: "서버오류" });
+  }
 };
+
+//console.log("dd", data);
