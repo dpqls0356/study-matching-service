@@ -48,7 +48,7 @@ const SubmitBtn = styled.input`
   color: white;
 `;
 const Button = styled.button`
-  background-color: ${(props) => props.bgColor};
+  background-color: ${(props) => props.bgcolor};
   border: none;
   border-radius: 30px;
   box-shadow: 4px 5px rgba(0, 0, 0, 0.1);
@@ -66,10 +66,11 @@ const SocialLogo = styled.img`
 `;
 
 function Login() {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const postJoin = async (data) => {
+    console.log(data);
     const { userid, password } = data;
     try {
       const response = await axios.post(`${BASE_URL}/login`, {
@@ -82,7 +83,18 @@ function Login() {
       }
     } catch (error) {
       //여러가지 에러 받아와서 처리하기
-      alert(error.response);
+      //alert(error.response);
+      console.log(error);
+    }
+  };
+  const googleLogin = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/login/google`);
+      console.log("구글로그인");
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+      console.log("err");
     }
   };
 
@@ -110,11 +122,11 @@ function Login() {
           />
         </InputDiv>
         <SubmitBtn type="submit" value="로그인"></SubmitBtn>
-        <Button bgColor="#FFEB3A">
+        <Button bgcolor="#FFEB3A">
           <SocialLogo src={kakaoLogo}></SocialLogo>
           <a href={KAKAO_AUTH_URL}>카카오로 로그인하기</a>
         </Button>
-        <Button bgColor="white">
+        <Button onClick={googleLogin} bgcolor="white">
           <SocialLogo src={googleLogo}></SocialLogo>
           <p>구글로 로그인하기</p>
         </Button>
