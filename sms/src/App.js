@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createGlobalStyle } from "styled-components";
 import Header from "./components/Header.js";
+import GoogleButton from "./screens/users/GoogleLogin.js";
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -76,7 +77,7 @@ function App() {
           <Outlet/>
           </AppContext.Provider>
       </div>
-   // { </RecoilRoot> }
+    // { </RecoilRoot> }
   );
 }
 

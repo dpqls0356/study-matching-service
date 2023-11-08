@@ -68,10 +68,12 @@ const SocialLogo = styled.img`
 
 
 function Login() {
+  console.log(process.env.REACT_APP_GOOGLE_CLIENT_SECRET);
+  console.log(process.env.REACT_APP_KAKAO_API_KEY);
   const {loggedIn,changeLoggedIn} = useContext(AppContext);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
-  const google_redirect_uri = "http://localhost:8080/oauth2/redirect";
-  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=email profile`;
+  const google_redirect_uri = "http://localhost:3000/oauth2/redirect";
+  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const postJoin = async (data) => {
@@ -135,4 +137,6 @@ function Login() {
   );
 }
 export default Login;
+
+
 

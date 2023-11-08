@@ -12,8 +12,7 @@ function GoogleLogin(){
         let code = reqParams.get("code"); // 인가코드 받는 부분
         try {
             const response = await axios.post(
-              `https://oauth2.googleapis.com/token?code=${code}&client_id=${process.env.GOOGLE_CLIENT_ID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&redirect_uri=${google_redirect_uri}&grant_type=authorization_code`
-            ); //받아온 코드로 access_token 얻어오기
+                `https://oauth2.googleapis.com/token?code=${code}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&client_secret=${process.env.REACT_APP_GOOGLE_CLIENT_SECRET}&redirect_uri=${google_redirect_uri}&grant_type=authorization_code`            ); //받아온 코드로 access_token 얻어오기
             const userInfo = await axios.get(
                 `https://www.googleapis.com/oauth2/v2/userinfo?alt=json`,
                 {
