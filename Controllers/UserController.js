@@ -34,7 +34,6 @@ export const loginUser = async (req, res) => {
 };
 
 export const kakaoLoginUser = async (req, res) => {
-  console.log("check", req.body);
   try {
     res.status(201).json({ message: "카카오 로그인 성공" });
   } catch (erorr) {

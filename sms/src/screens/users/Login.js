@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -6,6 +6,7 @@ import { styled } from "styled-components";
 import kakaoLogo from "../../image/logo/kakaoLogo.png";
 import googleLogo from "../../image/logo/googleLogo.png";
 import { BASE_URL } from "../../api";
+import { AppContext } from "../../App";
 const Wrapper = styled.div`
   padding: 100px 0px 100px 0px;
   display: flex;
@@ -64,8 +65,13 @@ const SocialLogo = styled.img`
   height: 20px;
   margin-right: 10px;
 `;
+const Link = styled.a`
+color: black;
+text-decoration: none;
+`;
 
 function Login() {
+  const  {loggedIn,changeLoggedIn} = useContext(AppContext);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -77,7 +83,11 @@ function Login() {
         password,
       });
       if (response.status === 201) {
-        //react에서 세션 유지하는 방법 알아보기이이이~
+        changeLoggedIn(true);
+        // login이 가능하기에 login 상태를 true로 변경하기
+        // 유저 정보 요청하기 get
+        // 서버 : req.session에 session에 userid가 있으면 유저 정보를 res에 담아 보내기
+        // 데이터가 있으면 해당 데이터로 유저 상태 벼경
         navigate("/");
       }
     } catch (error) {
@@ -88,6 +98,7 @@ function Login() {
 
   return (
     <Wrapper>
+      
       <LoginForm onSubmit={handleSubmit(postJoin)}>
         <InputDiv>
           <Label htmlFor="userid">아이디</Label>
@@ -112,7 +123,7 @@ function Login() {
         <SubmitBtn type="submit" value="로그인"></SubmitBtn>
         <Button bgColor="#FFEB3A">
           <SocialLogo src={kakaoLogo}></SocialLogo>
-          <a href={KAKAO_AUTH_URL}>카카오로 로그인하기</a>
+          <Link href={KAKAO_AUTH_URL}>카카오로 로그인하기</Link>
         </Button>
         <Button bgColor="white">
           <SocialLogo src={googleLogo}></SocialLogo>
@@ -123,3 +134,4 @@ function Login() {
   );
 }
 export default Login;
+

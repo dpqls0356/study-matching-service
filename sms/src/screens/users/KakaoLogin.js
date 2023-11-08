@@ -1,10 +1,12 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect,useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { BASE_URL } from "../../api";
 
-
 function KakaoLogin(){
+  const {loggedIn,changeLoggedIn} = useContext(AppContext);
+    const navigate = useNavigate();
     const getKakaoData = async () => {
         let reqParams = new URL(document.location.toString()).searchParams;
         let code = reqParams.get("code"); // 인가코드 받는 부분
@@ -40,9 +42,7 @@ function KakaoLogin(){
                 const response = await axios.post(`${BASE_URL}/login/kakao`,{
                     data
                 });
-                if(response.status===201){
-                    navigator(`/`);
-                }
+                navigate("/");
             }
             catch(e){
                 alert(e.response);
@@ -54,7 +54,8 @@ function KakaoLogin(){
     getKakaoData();
   }, []);
   return (
-    <div></div>
+    <div>
+    </div>
   );
 }
 
