@@ -88,7 +88,6 @@ function Join() {
           ckpassword,
           email,
           birth,
-          address,
           gender,
           img,
         });
@@ -187,16 +186,6 @@ function Join() {
           >
             여
           </GenderBtn>
-        </InputDiv>
-        <InputDiv>
-          <Label htmlFor="address">주소</Label>
-          <Input
-            {...register("address")}
-            required={true}
-            id="address"
-            type="text"
-            placeholder="주소를 입력하세요"
-          />
         </InputDiv>
         <SubmitBtn type="submit" value="계정생성"></SubmitBtn>
       </JoinForm>

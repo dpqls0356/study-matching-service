@@ -4,7 +4,7 @@ import Home from "./screens/Home";
 import Join from "./screens/users/Join";
 import Login from "./screens/users/Login";
 import KakaoLogin from "./screens/users/KakaoLogin";
-
+import GoogleLogin  from "./screens/users/GoogleLogin";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -25,6 +25,10 @@ const router = createBrowserRouter([
       {
         path:"/login/social/kakao/oauth",
         element:<KakaoLogin/>,
+      },
+      {
+        path:"/oauth2/redirect",
+        element:<GoogleLogin/>
       }
     ],
   },

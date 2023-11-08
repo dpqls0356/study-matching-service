@@ -124,7 +124,7 @@ function Login() {
         <SubmitBtn type="submit" value="로그인"></SubmitBtn>
         <Button bgcolor="#FFEB3A">
           <SocialLogo src={kakaoLogo}></SocialLogo>
-          <Link href={KAKAO_AUTH_URL}>카카오로 로그인하기</Link>
+          <Link to={KAKAO_AUTH_URL}>카카오로 로그인하기</Link>
         </Button>
         <Button  bgcolor="white">
           <SocialLogo src={googleLogo}></SocialLogo>
