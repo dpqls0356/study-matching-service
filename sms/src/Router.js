@@ -29,7 +29,8 @@ const router = createBrowserRouter([
       {
         path:"/oauth2/redirect",
         element:<GoogleLogin/>
-      }
+      },
+    
     ],
   },
 ]);
