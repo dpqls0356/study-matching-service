@@ -24,12 +24,8 @@ app.use(
 app.post("/join", joinUser);
 app.post("/login", loginUser);
 app.post("/login/kakao", kakaoLoginUser);
-app.get("/login/google", googleLogin);
-app.get("/oauth2/redirect", (req, res) => {
-  const { code } = req.query;
-  console.log(`code: ${code}`);
-  res.send("ok");
-});
+//app.get("/login/google", googleLogin);
+app.get("/oauth2/redirect", googleLogin);
 
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
