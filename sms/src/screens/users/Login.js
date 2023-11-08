@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
 import kakaoLogo from "../../image/logo/kakaoLogo.png";
@@ -65,15 +65,13 @@ const SocialLogo = styled.img`
   height: 20px;
   margin-right: 10px;
 `;
-const Link = styled.a`
-color: black;
-text-decoration: none;
-`;
+
 
 function Login() {
   const {loggedIn,changeLoggedIn} = useContext(AppContext);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
-
+  const google_redirect_uri = "http://localhost:8080/oauth2/redirect";
+  const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=email profile`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const postJoin = async (data) => {
@@ -99,20 +97,9 @@ function Login() {
       console.log(error);
     }
   };
-  const googleLogin = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/login/google`);
-      console.log("구글로그인");
-      console.log(res.data);
-    } catch (e) {
-      console.log(e);
-      console.log("err");
-    }
-  };
 
   return (
     <Wrapper>
-      
       <LoginForm onSubmit={handleSubmit(postJoin)}>
         <InputDiv>
           <Label htmlFor="userid">아이디</Label>
@@ -139,9 +126,9 @@ function Login() {
           <SocialLogo src={kakaoLogo}></SocialLogo>
           <Link href={KAKAO_AUTH_URL}>카카오로 로그인하기</Link>
         </Button>
-        <Button onClick={googleLogin} bgcolor="white">
+        <Button  bgcolor="white">
           <SocialLogo src={googleLogo}></SocialLogo>
-          <p>구글로 로그인하기</p>
+          <Link to={GOOGLE_AUTH_URL}>구글로 로그인하기</Link>
         </Button>
       </LoginForm>
     </Wrapper>
