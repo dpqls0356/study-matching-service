@@ -1,4 +1,6 @@
 import { Outlet } from "react-router-dom";
+// import {atom,RecoilRoot} from 'recoil';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createGlobalStyle } from "styled-components";
 import Header from "./components/Header.js";
 const GlobalStyle = createGlobalStyle`
@@ -54,14 +56,33 @@ table {
   border-spacing: 0;
 }
 `;
+
+// export const loggedState = atom({
+//   key:'loggedState',
+//   default:false,
+// })
+export const AppContext = createContext();
 function App() {
+  const [loggedIn,setLoggedIn] = useState(false);
+  const changeLoggedIn = (loggedInMod) =>{
+    setLoggedIn(loggedInMod);
+  }
   return (
-    <div className="App">
-      <GlobalStyle />
-      <Header/>
-      <Outlet/>
-    </div>
+    // <RecoilRoot>
+      <div className="App">
+        <AppContext.Provider value={{loggedIn,changeLoggedIn}}>
+          <GlobalStyle />
+          <Header/>
+          <Outlet/>
+          </AppContext.Provider>
+      </div>
+   // { </RecoilRoot> }
   );
 }
 
 export default App;
+
+//해야하는 일
+//해결 - 모든 컴포넌트가 동시에 사용할 수 있는 변수 만들기 - loggedIn 구현을 위함
+//서버에게 유저 정보 요청하기
+//받아서 유저 변수에 데이타 넣기

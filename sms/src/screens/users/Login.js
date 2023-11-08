@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
 import kakaoLogo from "../../image/logo/kakaoLogo.png";
 import googleLogo from "../../image/logo/googleLogo.png";
 import { BASE_URL } from "../../api";
+import { AppContext } from "../../App.js";
 const Wrapper = styled.div`
   padding: 100px 0px 100px 0px;
   display: flex;
@@ -65,8 +66,10 @@ const SocialLogo = styled.img`
   margin-right: 10px;
 `;
 
+
 function Login() {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+  const {loggedIn,changeLoggedIn} = useContext(AppContext);
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
   const google_redirect_uri = "http://localhost:8080/oauth2/redirect";
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=email profile`;
   const { register, handleSubmit } = useForm();
@@ -80,7 +83,12 @@ function Login() {
         password,
       });
       if (response.status === 201) {
-        //react에서 세션 유지하는 방법 알아보기이이이~
+       
+        // login이 가능하기에 login 상태를 true로 변경하기
+        // 유저 정보 요청하기 get
+        // 서버 : req.session에 session에 userid가 있으면 유저 정보를 res에 담아 보내기
+        // 데이터가 있으면
+        changeLoggedIn(true);
         navigate("/");
       }
     } catch (error) {
@@ -116,9 +124,9 @@ function Login() {
         <SubmitBtn type="submit" value="로그인"></SubmitBtn>
         <Button bgcolor="#FFEB3A">
           <SocialLogo src={kakaoLogo}></SocialLogo>
-          <a href={KAKAO_AUTH_URL}>카카오로 로그인하기</a>
+          <Link href={KAKAO_AUTH_URL}>카카오로 로그인하기</Link>
         </Button>
-        <Button bgcolor="white">
+        <Button  bgcolor="white">
           <SocialLogo src={googleLogo}></SocialLogo>
           <Link to={GOOGLE_AUTH_URL}>구글로 로그인하기</Link>
         </Button>
@@ -127,3 +135,4 @@ function Login() {
   );
 }
 export default Login;
+
