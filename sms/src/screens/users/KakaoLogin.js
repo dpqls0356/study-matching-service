@@ -47,16 +47,10 @@ function KakaoLogin(){
             catch(e){
                 alert(e.response);
             }
-
         }
-      } catch (e) {
-        //alert(e.response);
-        console.log(e);
-      }
-    }
-  };
-
-  useEffect(() => {
+    };
+      
+  useEffect(()=> {
     getKakaoData();
   }, []);
   return (
