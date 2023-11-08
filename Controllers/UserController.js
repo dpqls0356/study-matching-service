@@ -1,4 +1,5 @@
 import User from "../Models/UserModel.js";
+import axios from "axios";
 
 export const joinUser = async (req, res) => {
   console.log(req.body);
@@ -89,13 +90,51 @@ export const kakaoLoginUser = async (req, res) => {
   }
 };
 export const googleLogin = async (req, res) => {
-  console.log("구글로근");
-
   const google_redirect_uri = "http://localhost:8080/oauth2/redirect";
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=email profile`;
-  console.log(url);
+  const { code } = req.query;
 
-  res.redirect(url);
-  //res.status(201).json({ message: "구글 로그인 성공", url });
+  try {
+    const response = await axios.post(
+      `https://oauth2.googleapis.com/token?code=${code}&client_id=${process.env.GOOGLE_CLIENT_ID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&redirect_uri=${google_redirect_uri}&grant_type=authorization_code`
+    ); //받아온 코드로 access_token 얻어오기
+
+    const userInfo = await axios.get(
+      `https://www.googleapis.com/oauth2/v2/userinfo?alt=json`,
+      {
+        headers: {
+          authorization: `Bearer ${response.data.access_token}`,
+        },
+      }
+    ); //access_token을 바탕으로 유저 정보 얻어오기
+    console.log(userInfo);
+    const { email, name } = userInfo.data;
+    const existingUser = await User.findOne({
+      email,
+    });
+    if (existingUser) {
+      return res
+        .status(201)
+        .json({ message: "구글 로그인 성공", user: existingUser });
+    } else {
+      const googleUser = {
+        username: name,
+        userid: "1231",
+        password: "123",
+        ckpassword: "123",
+        email,
+        birth: "2023-11-03",
+        address: "a",
+        gender: "male",
+        img: "defaultProfileImg.png",
+      };
+      const newUser = await User.create(googleUser);
+      return res
+        .status(201)
+        .json({ message: "구글 로그인 성공", user: googleUser });
+    }
+    //res.status(201).json({ message: "구글로그인성공" });
+    //res.redirect("http://localhost:3000/");
+  } catch (error) {
+    //에러 처리하기
+  }
 };
-export const googleToken = () => {};
