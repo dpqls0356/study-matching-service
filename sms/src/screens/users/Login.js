@@ -6,7 +6,7 @@ import { styled } from "styled-components";
 import kakaoLogo from "../../image/logo/kakaoLogo.png";
 import googleLogo from "../../image/logo/googleLogo.png";
 import { BASE_URL } from "../../api";
-import { AppContext } from "../../App";
+import { AppContext } from "../../App.js";
 const Wrapper = styled.div`
   padding: 100px 0px 100px 0px;
   display: flex;
@@ -71,7 +71,8 @@ text-decoration: none;
 `;
 
 function Login() {
-  const  {loggedIn,changeLoggedIn} = useContext(AppContext);
+  const {loggedIn,changeLoggedIn} = useContext(AppContext);
+
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -83,11 +84,12 @@ function Login() {
         password,
       });
       if (response.status === 201) {
-        changeLoggedIn(true);
+       
         // login이 가능하기에 login 상태를 true로 변경하기
         // 유저 정보 요청하기 get
         // 서버 : req.session에 session에 userid가 있으면 유저 정보를 res에 담아 보내기
-        // 데이터가 있으면 해당 데이터로 유저 상태 벼경
+        // 데이터가 있으면
+        changeLoggedIn(true);
         navigate("/");
       }
     } catch (error) {

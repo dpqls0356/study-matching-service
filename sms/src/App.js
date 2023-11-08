@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+// import {atom,RecoilRoot} from 'recoil';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createGlobalStyle } from "styled-components";
 import Header from "./components/Header.js";
@@ -56,7 +57,10 @@ table {
 }
 `;
 
-
+// export const loggedState = atom({
+//   key:'loggedState',
+//   default:false,
+// })
 export const AppContext = createContext();
 function App() {
   const [loggedIn,setLoggedIn] = useState(false);
@@ -64,13 +68,15 @@ function App() {
     setLoggedIn(loggedInMod);
   }
   return (
-    <div className="App">
-      <AppContext.Provider value={{loggedIn,changeLoggedIn}}>
-        <GlobalStyle />
-        <Header/>
-        <Outlet/>
-        </AppContext.Provider>
-    </div>
+    // <RecoilRoot>
+      <div className="App">
+        <AppContext.Provider value={{loggedIn,changeLoggedIn}}>
+          <GlobalStyle />
+          <Header/>
+          <Outlet/>
+          </AppContext.Provider>
+      </div>
+   // { </RecoilRoot> }
   );
 }
 

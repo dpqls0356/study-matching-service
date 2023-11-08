@@ -3,7 +3,7 @@ import React, { useEffect,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { BASE_URL } from "../../api";
-
+import { AppContext } from "../../App.js";
 function KakaoLogin(){
   const {loggedIn,changeLoggedIn} = useContext(AppContext);
     const navigate = useNavigate();
@@ -42,6 +42,7 @@ function KakaoLogin(){
                 const response = await axios.post(`${BASE_URL}/login/kakao`,{
                     data
                 });
+                changeLoggedIn(true);
                 navigate("/");
             }
             catch(e){
