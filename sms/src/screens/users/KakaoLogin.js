@@ -1,4 +1,3 @@
-
 import React, { useEffect,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -48,10 +47,16 @@ function KakaoLogin(){
             catch(e){
                 alert(e.response);
             }
+
         }
-    };
-      
-  useEffect(()=> {
+      } catch (e) {
+        //alert(e.response);
+        console.log(e);
+      }
+    }
+  };
+
+  useEffect(() => {
     getKakaoData();
   }, []);
   return (
