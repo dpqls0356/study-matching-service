@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const LoginForm = styled.div`
+const LoginForm = styled.form`
   height: 50%;
   width: 500px;
   display: flex;
@@ -68,8 +68,6 @@ const SocialLogo = styled.img`
 
 
 function Login() {
-  console.log(process.env.REACT_APP_GOOGLE_CLIENT_SECRET);
-  console.log(process.env.REACT_APP_KAKAO_API_KEY);
   const {loggedIn,changeLoggedIn} = useContext(AppContext);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
   const google_redirect_uri = "http://localhost:3000/oauth2/redirect";

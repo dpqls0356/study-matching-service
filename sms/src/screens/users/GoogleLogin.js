@@ -21,10 +21,13 @@ function GoogleLogin(){
                   },
                 }
               );
-            console.log(userInfo);
+              if(userInfo){
+                changeLoggedIn(true);
+                navigate("/");
+              }
         }
-        catch(e){
-
+        catch(error){
+          console.log(error);
         }
     };
       
