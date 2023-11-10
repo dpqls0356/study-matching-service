@@ -13,7 +13,7 @@ function GoogleLogin(){
         try {
             const response = await axios.post(
                 `https://oauth2.googleapis.com/token?code=${code}&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&client_secret=${process.env.REACT_APP_GOOGLE_CLIENT_SECRET}&redirect_uri=${google_redirect_uri}&grant_type=authorization_code`            ); //받아온 코드로 access_token 얻어오기
-            const userInfo = await axios.get(
+            const data = await axios.get(
                 `https://www.googleapis.com/oauth2/v2/userinfo?alt=json`,
                 {
                   headers: {
@@ -21,13 +21,10 @@ function GoogleLogin(){
                   },
                 }
               );
-              if(userInfo){
-                changeLoggedIn(true);
-                navigate("/");
-              }
+            // 서버에 데이터 보내고 로그인 로직 짜기
         }
-        catch(error){
-          console.log(error);
+        catch(e){
+// 구글 로그인할 떄 발생할 수 있는 오류 알아보기
         }
     };
       

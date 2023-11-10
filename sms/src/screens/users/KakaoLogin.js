@@ -41,11 +41,15 @@ function KakaoLogin(){
                 const response = await axios.post(`${BASE_URL}/login/kakao`,{
                     data
                 });
-                changeLoggedIn(true);
-                navigate("/");
+                if(response.status===201){
+                  changeLoggedIn(true);
+                  navigate("/");
+                }
             }
             catch(e){
-                alert(e.response);
+                if(e.response.status===500){
+                  // 서버오류는 어떻게 처리할건지 ...
+                }
             }
         }
     };

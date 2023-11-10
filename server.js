@@ -8,7 +8,8 @@ import {
   kakaoLoginUser,
   loginUser,
 } from "./Controllers/UserController.js";
-
+import session from "express-session";
+import { localsMiddleware } from "./middleware.js";
 const app = express();
 const PORT = 8080;
 
@@ -20,11 +21,19 @@ app.use(
     credentials: true, // 인증 정보 허용 여부
   })
 );
+app.use(session({
+  secret:"sssss",
+  resave:false,
+  saveUninitialized:false,
+  // store:MongoStore.create({
+  //     mongoUrl:process.env.DB_URL
+  // })
+}))
 
+app.use(localsMiddleware);
 app.post("/join", joinUser);
 app.post("/login", loginUser);
 app.post("/login/kakao", kakaoLoginUser);
-//app.get("/login/google", googleLogin);
 app.get("/oauth2/redirect", googleLogin);
 
 const handleServer = () => {
