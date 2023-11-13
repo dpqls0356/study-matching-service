@@ -1,8 +1,10 @@
 import "dotenv/config";
+import MongoStore from "connect-mongo";
 import express from "express";
 import cors from "cors";
 import "./db.js";
 import {
+  userinfo,
   googleLogin,
   joinUser,
   kakaoLoginUser,
@@ -25,17 +27,24 @@ app.use(session({
   secret:"sssss",
   resave:false,
   saveUninitialized:false,
-  // store:MongoStore.create({
-  //     mongoUrl:process.env.DB_URL
-  // })
+  store:MongoStore.create({
+      mongoUrl:process.env.DB_URL
+  })
 }))
+// app.use((req,res,next)=>{
+//       req.sessionStore.all((error,sessions)=>{
+//           console.log(sessions);
+//           next();
+//       })
+//   });
+  
 
 app.use(localsMiddleware);
 app.post("/join", joinUser);
 app.post("/login", loginUser);
 app.post("/login/kakao", kakaoLoginUser);
 app.get("/oauth2/redirect", googleLogin);
-
+app.get("/userinfo",userinfo);
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 };

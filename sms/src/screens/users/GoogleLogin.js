@@ -2,9 +2,10 @@ import React, { useEffect,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { BASE_URL } from "../../api";
-import { AppContext } from "../../App.js";
+import { LoggedInContext,UserContext } from "../../App.js";
 function GoogleLogin(){
-  const {loggedIn,changeLoggedIn} = useContext(AppContext);
+  const {user,changeUser} = useContext(UserContext);
+  const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
     const navigate = useNavigate();
     const getGoogleData = async () => {
         const google_redirect_uri = "http://localhost:3000/oauth2/redirect";

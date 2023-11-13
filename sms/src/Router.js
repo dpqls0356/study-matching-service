@@ -5,6 +5,7 @@ import Join from "./screens/users/Join";
 import Login from "./screens/users/Login";
 import KakaoLogin from "./screens/users/KakaoLogin";
 import GoogleLogin  from "./screens/users/GoogleLogin";
+import Logout from "./screens/users/Logout";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
         path:"/oauth2/redirect",
         element:<GoogleLogin/>
       },
+      {
+        path:"/logout",
+        element:<Logout/>
+      }
     
     ],
   },

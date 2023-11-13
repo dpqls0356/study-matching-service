@@ -40,7 +40,8 @@ export const loginUser = async (req, res) => {
       return res.status(404).json({ errorpart:"password",message: "비밀번호가 일치하지않습니다." });
     }
     req.session.userid = user.userid;
-    res.status(201).json({ message: "로그인 성공" });
+    req.session.username = user.username;
+    res.status(201).json({message: "로그인 성공" });
   } catch (error) {
     res.status(500).json({ message: "서버 오류" });
   }
@@ -135,3 +136,18 @@ export const googleLogin = async (req, res) => {
     //에러 처리하기
   }
 };
+
+export const userinfo =async(req,res)=>{
+  console.log("userinfo print");
+  console.log("======================");
+  console.log(req.session);
+  console.log("======================");
+  if(!req.session.userid){
+    return res.status(404).json({message:"해당 유저가 존재하지않습니다."});
+  }
+  else{
+    //여기서 데이터 값이 제대로 안날아감 그래서 userInfo가 undefined인 상태
+    const userinfo = await User.findOne({userid:req.session.userid});
+    return res.status(200).json({userid:userinfo.userid,username:userinfo.username});
+  }
+}

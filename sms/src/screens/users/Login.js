@@ -6,7 +6,7 @@ import { styled } from "styled-components";
 import kakaoLogo from "../../image/logo/kakaoLogo.png";
 import googleLogo from "../../image/logo/googleLogo.png";
 import { BASE_URL } from "../../api";
-import { AppContext } from "../../App.js";
+import { LoggedInContext,UserContext } from "../../App.js";
 const Wrapper = styled.div`
   padding: 100px 0px 100px 0px;
   display: flex;
@@ -68,34 +68,42 @@ const SocialLogo = styled.img`
 const Error = styled.div``;
 
 function Login() {
+  const {user,changeUser} = useContext(UserContext);
   const [idError,setIdError] = useState(false);
   const [passwordError,setPasswordError] = useState(false);
-  const {loggedIn,changeLoggedIn} = useContext(AppContext);
+  const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
   const google_redirect_uri = "http://localhost:3000/oauth2/redirect";
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const postJoin = async (data) => {
-    console.log(data);
     const { userid, password } = data;
     try {
       const response = await axios.post(`${BASE_URL}/login`, {
         userid,
         password,
+      },{
+        withCredentials: true
       });
       if (response.status === 201) {
 
         // login이 가능하기에 login 상태를 true로 변경하기 - 완료
         changeLoggedIn(true);
         // 서버 : req.session에 session에 userid가 있으면 유저 정보를 res에 담아 보내기
-        const userInfo = await axios.get(`${BASE_URL}/userinfo`,{userid});
-        // 데이터가 있으면
-        if(userInfo){
+        try{
+          const userInfo = await axios.get(`${BASE_URL}/userinfo`,{
+            withCredentials: true
+          });
+          // console.log("userInfo: "+JSON.stringify(userInfo.data.username));
+          window.localStorage.setItem('username',userInfo.data.username);
+          window.localStorage.setItem('userid',userInfo.data.userid);
+          // 데이터가 있으면
+          changeUser(userInfo);
           navigate("/");
         }
         // 올바른 유저가 세션에 없다면 ?
-        else{
+        catch(error){
 
         }
       }
