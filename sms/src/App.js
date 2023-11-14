@@ -72,7 +72,7 @@ function App() {
   const changeLoggedIn = (loggedInMod) =>{
     setLoggedIn(loggedInMod);
   }
-  var [user,setUser] = useState();
+  var [user,setUser] = useState(null);
   const changeUser = (addUser) =>{
     setUser(addUser);
   }

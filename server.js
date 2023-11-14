@@ -9,6 +9,7 @@ import {
   joinUser,
   kakaoLoginUser,
   loginUser,
+  logoutUser
 } from "./Controllers/UserController.js";
 import session from "express-session";
 import { localsMiddleware } from "./middleware.js";
@@ -29,7 +30,8 @@ app.use(session({
   saveUninitialized:false,
   store:MongoStore.create({
       mongoUrl:process.env.DB_URL
-  })
+  }),
+  cookie:{maxAge:(3.6e+6)*24}
 }))
 // app.use((req,res,next)=>{
 //       req.sessionStore.all((error,sessions)=>{
@@ -44,6 +46,7 @@ app.post("/join", joinUser);
 app.post("/login", loginUser);
 app.post("/login/kakao", kakaoLoginUser);
 app.get("/oauth2/redirect", googleLogin);
+app.get("/logout",logoutUser);
 app.get("/userinfo",userinfo);
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);

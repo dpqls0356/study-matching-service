@@ -1,3 +1,4 @@
+import e from "express";
 import User from "../Models/UserModel.js";
 
 export const joinUser = async (req, res) => {
@@ -150,4 +151,8 @@ export const userinfo =async(req,res)=>{
     const userinfo = await User.findOne({userid:req.session.userid});
     return res.status(200).json({userid:userinfo.userid,username:userinfo.username});
   }
+}
+export const logoutUser = (req,res)=>{
+  req.session.destroy();
+  console.log(req.session);
 }
