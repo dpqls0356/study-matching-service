@@ -1,5 +1,5 @@
+import e from "express";
 import User from "../Models/UserModel.js";
-import axios from "axios";
 
 export const joinUser = async (req, res) => {
   console.log(req.body);
@@ -12,9 +12,9 @@ export const joinUser = async (req, res) => {
       User.findOne({ email }),
     ]); //중복 이메일 아이디 검사를 병렬로 수행
     if (existingUserId) {
-      return res.status(400).json({ message: "이미 존재하는 아이디 입니다." });
+      return res.status(400).json({ errorpart:"id",message: "이미 존재하는 아이디 입니다." });
     } else if (existingEmail) {
-      return res.status(400).json({ message: "이미 존재하는 이메일입니다." });
+      return res.status(400).json({ errorpart:"email",message: "이미 존재하는 이메일입니다." });
     }
     const newUser = await User.create(req.body);
     res.status(201).json({ message: "회원가입 성공", user: newUser });
@@ -35,12 +35,14 @@ export const loginUser = async (req, res) => {
     if (!user)
       return res
         .status(401)
-        .json({ message: "사용자 정보가 올바르지 않습니다." });
+        .json({ errorpart :"id",message: "존재하지않는 아이디입니다." });
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) {
-      return res.status().json({ message: "사용자 정보가 올바르지 않습니다." });
+      return res.status(404).json({ errorpart:"password",message: "비밀번호가 일치하지않습니다." });
     }
-    res.status(200).json({ message: "로그인 성공", user: user });
+    req.session.userid = user.userid;
+    req.session.username = user.username;
+    res.status(201).json({message: "로그인 성공" });
   } catch (error) {
     res.status(500).json({ message: "서버 오류" });
   }
@@ -62,18 +64,15 @@ export const kakaoLoginUser = async (req, res) => {
         .json({ message: "카카오 로그인 성공", user: existingUser });
     } else {
       //소셜로그인이 처음 로그인임(회원가입안된상태) 소셜로그인 데이터 db에 저장하기
-      console.log(req.body.data.kakao_account.profile.nickname);
       const kakaoUser = {
-        //이메일 이름 제외한 값 어떻게 받을지 생각
-        username,
-        userid: "2233",
-        password: "222",
-        ckpassword: "222",
-        email,
+        userid: req.body.data.id,
+        img: req.body.data.properties.profile_image,
+        email: req.body.data.kakao_account.email,
+        username: req.body.data.properties.nickname,
+        password: req.body.data.id,
+        //생일, 성별 어떻게 받을지 생각
         birth: "2023-11-03",
-        address: "a",
         gender: "male",
-        img: "defaultProfileImg.png",
       };
 
       const newUser = await User.create(kakaoUser);
@@ -138,3 +137,22 @@ export const googleLogin = async (req, res) => {
     //에러 처리하기
   }
 };
+
+export const userinfo =async(req,res)=>{
+  console.log("userinfo print");
+  console.log("======================");
+  console.log(req.session);
+  console.log("======================");
+  if(!req.session.userid){
+    return res.status(404).json({message:"해당 유저가 존재하지않습니다."});
+  }
+  else{
+    //여기서 데이터 값이 제대로 안날아감 그래서 userInfo가 undefined인 상태
+    const userinfo = await User.findOne({userid:req.session.userid});
+    return res.status(200).json({userid:userinfo.userid,username:userinfo.username});
+  }
+}
+export const logoutUser = (req,res)=>{
+  req.session.destroy();
+  console.log(req.session);
+}
