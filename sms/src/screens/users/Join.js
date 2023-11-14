@@ -59,12 +59,10 @@ function Join() {
   const [checkGender, setCheckGender] = useState(false);
   const [genderError, setGenderError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [idError,setIdError] = useState(false);
+  const [emailError,setEmailError] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  useEffect(() => {
-    setGender("");
-    setCheckGender(false);
-  }, []);
   const createAccount = async (data) => {
     const { username, userid, password, ckpassword, email, birth, address } =
       data;
@@ -81,6 +79,8 @@ function Join() {
         img = data.img[0].name;
       }
       try {
+        setIdError(false);
+        setEmailError(false);
         const response = await axios.post(`${BASE_URL}/join`, {
           username,
           userid,
@@ -95,8 +95,17 @@ function Join() {
           navigate("/login");
         }
       } catch (error) {
-        //여러가지 에러 받아와서 처리하기
-        alert(error.response);
+        if(error.response.status===400){
+          if(error.response.data.errorpart==="id"){
+            setIdError(idError=>!idError);
+          }
+          else if(error.response.data.errorpart==="email"){
+            setEmailError(emailError=>!emailError);
+          }
+        }
+        else if(error.response.status===500){
+          // 회원가입 실패 이유가 먼디요 ?
+        }
       }
     }
   };
@@ -115,6 +124,7 @@ function Join() {
             placeholder="이름을 입력하세요"
           />
         </InputDiv>
+        {idError ? <Error>이미 존재하는 아이디입니다.</Error> : null}
         <InputDiv>
           <Label htmlFor="userid">아이디</Label>
           <Input
@@ -148,6 +158,7 @@ function Join() {
             placeholder="비밀번호를 다시 입력해주세요"
           />
         </InputDiv>
+        {emailError ? <Error>이미 존재하는 이메일입니다.</Error> : null}
         <InputDiv>
           <Label htmlFor="email">이메일</Label>
           <Input

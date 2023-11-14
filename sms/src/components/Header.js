@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { AppContext } from "../App";
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { LoggedInContext,UserContext } from "../App";
 
 const Wrapper =styled.div`
     position: fixed;
@@ -36,7 +35,7 @@ const Link = styled.a`
     background-color: rgba(0,0,0,0);
 `
 function Headers(){
-    const {loggedIn,changeLoggedIn} = useContext(AppContext);
+    const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
     return (
         <Wrapper>
             <Logo href="/">SMS</Logo>

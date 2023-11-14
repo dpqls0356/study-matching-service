@@ -2,9 +2,10 @@ import React, { useEffect,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { BASE_URL } from "../../api";
-import { AppContext } from "../../App.js";
+import { LoggedInContext,UserContext } from "../../App.js";
 function KakaoLogin(){
-  const {loggedIn,changeLoggedIn} = useContext(AppContext);
+  const {user,changeUser} = useContext(UserContext);
+  const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
     const navigate = useNavigate();
     const getKakaoData = async () => {
         let reqParams = new URL(document.location.toString()).searchParams;
@@ -41,11 +42,15 @@ function KakaoLogin(){
                 const response = await axios.post(`${BASE_URL}/login/kakao`,{
                     data
                 });
-                changeLoggedIn(true);
-                navigate("/");
+                if(response.status===201){
+                  changeLoggedIn(true);
+                  navigate("/");
+                }
             }
             catch(e){
-                alert(e.response);
+                if(e.response.status===500){
+                  // 서버오류는 어떻게 처리할건지 ...
+                }
             }
         }
     };

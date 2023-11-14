@@ -56,28 +56,46 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+a{
+  text-decoration:none;
+}
 `;
 
 // export const loggedState = atom({
 //   key:'loggedState',
 //   default:false,
 // })
-export const AppContext = createContext();
+export const LoggedInContext = createContext();
+export const UserContext = createContext();
 function App() {
-  const [loggedIn,setLoggedIn] = useState(false);
+  var [loggedIn,setLoggedIn] = useState(false);
   const changeLoggedIn = (loggedInMod) =>{
     setLoggedIn(loggedInMod);
   }
+  var [user,setUser] = useState(null);
+  const changeUser = (addUser) =>{
+    setUser(addUser);
+  }
+  useEffect(()=>{
+    if(localStorage.getItem('userid')===null){
+      setLoggedIn(false);
+    }
+    else{
+      setLoggedIn(true);
+      changeUser({userid:localStorage.getItem("userid"),username:localStorage.getItem('username')});
+    }
+  },[]);
+  console.log("app:"+loggedIn,user);
   return (
-    // <RecoilRoot>
       <div className="App">
-        <AppContext.Provider value={{loggedIn,changeLoggedIn}}>
-          <GlobalStyle />
-          <Header/>
-          <Outlet/>
-          </AppContext.Provider>
+        <LoggedInContext.Provider value={{loggedIn,changeLoggedIn}}>
+          <UserContext.Provider value={{user,changeUser}}>
+            <GlobalStyle />
+            <Header/>
+            <Outlet/>
+          </UserContext.Provider>
+          </LoggedInContext.Provider>
       </div>
-    // { </RecoilRoot> }
   );
 }
 

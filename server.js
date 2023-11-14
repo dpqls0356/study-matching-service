@@ -1,14 +1,18 @@
 import "dotenv/config";
+import MongoStore from "connect-mongo";
 import express from "express";
 import cors from "cors";
 import "./db.js";
 import {
+  userinfo,
   googleLogin,
   joinUser,
   kakaoLoginUser,
   loginUser,
+  logoutUser
 } from "./Controllers/UserController.js";
-
+import session from "express-session";
+import { localsMiddleware } from "./middleware.js";
 const app = express();
 const PORT = 8080;
 
@@ -20,13 +24,30 @@ app.use(
     credentials: true, // 인증 정보 허용 여부
   })
 );
+app.use(session({
+  secret:"sssss",
+  resave:false,
+  saveUninitialized:false,
+  store:MongoStore.create({
+      mongoUrl:process.env.DB_URL
+  }),
+  cookie:{maxAge:(3.6e+6)*24}
+}))
+// app.use((req,res,next)=>{
+//       req.sessionStore.all((error,sessions)=>{
+//           console.log(sessions);
+//           next();
+//       })
+//   });
+  
 
+app.use(localsMiddleware);
 app.post("/join", joinUser);
 app.post("/login", loginUser);
 app.post("/login/kakao", kakaoLoginUser);
-//app.get("/login/google", googleLogin);
 app.get("/oauth2/redirect", googleLogin);
-
+app.get("/logout",logoutUser);
+app.get("/userinfo",userinfo);
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 };
