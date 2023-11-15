@@ -59,6 +59,15 @@ table {
 a{
   text-decoration:none;
 }
+#root{
+  height: 100vh;
+}
+.App{
+  height: 100%;
+}
+.App > div:nth-child(2){
+  margin-top: 50px;
+}
 `;
 
 // export const loggedState = atom({
@@ -78,14 +87,15 @@ function App() {
   }
   useEffect(()=>{
     if(localStorage.getItem('userid')===null){
-      setLoggedIn(false);
+      changeLoggedIn(false);
+      console.log("null: ",loggedIn,user);
     }
     else{
-      setLoggedIn(true);
+      changeLoggedIn(true);
       changeUser({userid:localStorage.getItem("userid"),username:localStorage.getItem('username')});
     }
   },[]);
-  console.log("app:"+loggedIn,user);
+  console.log("true:",loggedIn,user);
   return (
       <div className="App">
         <LoggedInContext.Provider value={{loggedIn,changeLoggedIn}}>
