@@ -1,4 +1,3 @@
-import imageUploader from "../imageUplodaer.js";
 import User from "../Models/UserModel.js";
 
 export const joinUser = async (req, res) => {
@@ -196,5 +195,22 @@ export const editProfile = async (req, res) => {
     res.status(500).json({
       error: "프로필을 수정하는 중에 오류가 발생했습니다. 다시 시도해 주세요",
     });
+  }
+};
+export const getEditUserInfo = async (req, res) => {
+  if (req.session.userid) {
+    const userdata = await User.findOne({ userid: req.session.userid });
+    console.log(userdata);
+    const senddata = {
+      userid: userdata.userid,
+      profileImg: userdata.profile,
+      username: userdata.username,
+      birth: userdata.birth,
+      gender: userdata.gender,
+      email: userdata.email,
+    };
+    return res.status(200).json({ senddata });
+  } else {
+    return res.status(500).json({ message: "not find user" });
   }
 };

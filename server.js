@@ -3,11 +3,17 @@ import MongoStore from "connect-mongo";
 import express from "express";
 import cors from "cors";
 import "./db.js";
-
+import {
+  userinfo,
+  googleLogin,
+  joinUser,
+  kakaoLoginUser,
+  loginUser,
+  logoutUser,
+  getEditUserInfo,
+} from "./Controllers/UserController.js";
 import session from "express-session";
 import { localsMiddleware } from "./middleware.js";
-import userRouter from "./routes/userRouter.js";
-import studyGroupRouter from "./routes/studyGroupRouter.js";
 const app = express();
 const PORT = 8080;
 
@@ -36,10 +42,15 @@ app.use(
 //           next();
 //       })
 //   });
-app.use(localsMiddleware);
-app.use("/user", userRouter);
-app.use("/studyGroup", studyGroupRouter);
 
+app.use(localsMiddleware);
+app.post("/join", joinUser);
+app.post("/login", loginUser);
+app.post("/login/kakao", kakaoLoginUser);
+app.get("/oauth2/redirect", googleLogin);
+app.get("/logout", logoutUser);
+app.get("/userinfo", userinfo);
+app.get("/user/getEditUserInfo", getEditUserInfo);
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 };
