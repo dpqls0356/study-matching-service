@@ -39,7 +39,7 @@ function KakaoLogin(){
         ).json();
         if(data){
             try{
-                const response = await axios.post(`${BASE_URL}/login/kakao`,{
+                const response = await axios.post(`${BASE_URL}/user/login/kakao`,{
                     data
                 });
                 if(response.status===201){
