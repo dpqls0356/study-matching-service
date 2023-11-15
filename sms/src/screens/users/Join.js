@@ -81,7 +81,7 @@ function Join() {
       try {
         setIdError(false);
         setEmailError(false);
-        const response = await axios.post(`${BASE_URL}/join`, {
+        const response = await axios.post(`${BASE_URL}/user/join`, {
           username,
           userid,
           password,

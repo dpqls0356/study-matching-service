@@ -80,7 +80,7 @@ function Login() {
   const postJoin = async (data) => {
     const { userid, password } = data;
     try {
-      const response = await axios.post(`${BASE_URL}/login`, {
+      const response = await axios.post(`${BASE_URL}/user/login`, {
         userid,
         password,
       },{
@@ -92,7 +92,7 @@ function Login() {
         changeLoggedIn(true);
         // 서버 : req.session에 session에 userid가 있으면 유저 정보를 res에 담아 보내기
         try{
-          const userInfo = await axios.get(`${BASE_URL}/userinfo`,{
+          const userInfo = await axios.get(`${BASE_URL}/user/userinfo`,{
             withCredentials: true
           });
           // console.log("userInfo: "+JSON.stringify(userInfo.data.username));
@@ -108,19 +108,20 @@ function Login() {
         }
       }
     } catch (error) {
-      if(error.response.status===401){
-        if(error.response.data.errorpart==="id"){
-          setIdError(idError=>!idError);
-        }
-      }
-      else if(error.response.status===404){
-        if(error.response.data.errorpart==="password"){
-          setPasswordError(passwordError=>!passwordError);
-        }
-      }
-      else if(error.response.status===500){
-        // 서버오류일땐 어떻게 처리해야함 ?
-      }
+      console.log(error);
+      // if(error.response.status===401){
+      //   if(error.response.data.errorpart==="id"){
+      //     setIdError(idError=>!idError);
+      //   }
+      // }
+      // else if(error.response.status===404){
+      //   if(error.response.data.errorpart==="password"){
+      //     setPasswordError(passwordError=>!passwordError);
+      //   }
+      // }
+      // else if(error.response.status===500){
+      //   // 서버오류일땐 어떻게 처리해야함 ?
+      // }
     }
   };
 
