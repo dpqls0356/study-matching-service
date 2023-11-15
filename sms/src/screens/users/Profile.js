@@ -72,21 +72,33 @@ const Label = styled.label`
   height: 30px;
   margin: 10px 0px;
 `;
+const Genderbox = styled.div`
+width: 70%;
+display: flex;
+`
 const GenderBtn = styled.div`
-  width: 35%;
+  border-radius: 20px;
+  width: 50%;
   height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const SubmitBtn = styled.input`
   margin-top: 30px;
   height: 40px;
 `;
-
+// 아이디 값 이전이랑 비교
+// 비번 이전이랑 비교
+// 비번 확인비번 비교
+// 빈 데이터는 어떻게 할 것인가?
 function Profile(){
     // const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
     const {user,changeUser} = useContext(UserContext);
     const [edit, setEdit] = useState(false);
     const [userdata,setUserData] = useState();
     const {register,handleSubmit} = useForm();
+    const [gender,setGender] =useState();
     // 수정 데이터 보내는 함수
     const eidtProfile =(data)=>{
     }
@@ -96,6 +108,12 @@ function Profile(){
             const response = await axios(`${BASE_URL}/user/getEditUserInfo`,{
                 withCredentials: true
             });
+            if(response.data.senddata.gender==="female"){
+                setGender(true);
+            }
+            else{
+                setGender(false);
+            }
             setUserData(response.data.senddata);
         }
         catch(e){
@@ -130,7 +148,8 @@ function Profile(){
                         required={true}
                         id="userid"
                         type="text"
-                        placeholder="아이디를 입력하세요"
+                        disabled="true"
+                        placeholder={userdata.userid}
                     />
                     </InputDiv>
                     {/* {passwordError ? (
@@ -164,7 +183,8 @@ function Profile(){
                         required={true}
                         id="email"
                         type="email"
-                        placeholder="이메일을 입력하세요"
+                        disabled="true"
+                        placeholder={userdata.email}
                     />
                     </InputDiv>
                     <InputDiv>
@@ -173,18 +193,33 @@ function Profile(){
                         {...register("birth")}
                         required={true}
                         id="birth"
-                        type="date"
+                        type="text"
+                        placeholder={userdata.birth}
+                        disabled="true"
                     />
                     </InputDiv>
                     {/* {genderError ? <Error>성별을 선택해주세요</Error> : null} */}
                     <InputDiv>
                     <Label>성별</Label>
+                    {gender?
+                    <Genderbox>
+                        <GenderBtn >
+                            남
+                        </GenderBtn>
+                        <GenderBtn style={{backgroundColor:"#035D91",color:"white"}}>
+                            여
+                        </GenderBtn>
+                    </Genderbox>
+                    :
+                    <Genderbox>
+                        <GenderBtn style={{backgroundColor:"#035D91",color:"white"}}>
+                            남
+                        </GenderBtn>
                         <GenderBtn>
-                        남
-                    </GenderBtn>
-                    <GenderBtn>
-                        여
-                    </GenderBtn>
+                            여
+                        </GenderBtn>
+                    </Genderbox>
+                    }
                     </InputDiv>
                     <SubmitBtn type="submit" value="수정하기"></SubmitBtn>
                 </EditForm>
