@@ -21,7 +21,7 @@ router.post("/editProfile", editProfile);
 router.get("/logout", logoutUser);
 router.get("/userinfo", userinfo);
 router.get("/oauth2/redirect", googleLogin);
-router.get("/editUserInfo", getEditUserInfo);
+router.get("/getEditUserInfo", getEditUserInfo);
 
 //router.post()
 
