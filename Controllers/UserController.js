@@ -1,7 +1,8 @@
 import User from "../Models/UserModel.js";
 
 export const joinUser = async (req, res) => {
-  const { userid, email, profile } = req.body;
+  const { userid, email, img } = req.body;
+
   try {
     const [existingUserId, existingEmail] = await Promise.all([
       User.findOne({ userid }),
@@ -27,11 +28,10 @@ export const joinUser = async (req, res) => {
     //     const { location: profile } = req.file || {}; // S3에서 업로드한 이미지 URL
     //   });
     // }
-
     const newUser = await User.create(req.body);
     res.status(201).json({ message: "회원가입 성공", user: newUser });
   } catch (error) {
-    res.status(500).json({ message: "회원가입 실패" });
+    res.status(500).json({ message: "서버 에러" });
   }
 };
 
@@ -41,12 +41,12 @@ export const loginUser = async (req, res) => {
     if (!userid || !password) {
       return res
         .status(400)
-        .json({ message: "요청 형식이 올바르지 않습니다." });
+        .json({ message: "아이디나 비밀번호 값을 입력해주세요" });
     }
     const user = await User.findOne({ userid });
     if (!user)
       return res
-        .status(401)
+        .status(404)
         .json({ errorpart: "id", message: "존재하지않는 아이디입니다." });
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) {
@@ -72,7 +72,6 @@ export const kakaoLoginUser = async (req, res) => {
     const existingUser = await User.findOne({
       email,
     });
-
     if (existingUser) {
       //카카오나 구글이메일로 회원가입하고 소셜 로그인시 기존 정보로 로그인 시키고 유저 정보를 줌
       return res
@@ -175,7 +174,7 @@ export const logoutUser = (req, res) => {
 export const editProfile = async (req, res) => {
   //프로필 수정
   try {
-    const user = await User.findById(req.session._id);
+    //const user = await User.findById(req.session._id);
     const _id = req.session._id;
     const { username, password, profile } = req.body;
     if (password) {
@@ -190,6 +189,7 @@ export const editProfile = async (req, res) => {
       },
       { new: true } //업데이트 된 user 반환
     );
+    req.session.username = username;
     res.status(200).json({ message: "프로필 수정 성공", user: updateUser });
   } catch (error) {
     res.status(500).json({
