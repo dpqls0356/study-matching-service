@@ -6,6 +6,7 @@ import Login from "./screens/users/Login";
 import KakaoLogin from "./screens/users/KakaoLogin";
 import GoogleLogin  from "./screens/users/GoogleLogin";
 import Logout from "./screens/users/Logout";
+import Profile from "./screens/users/Profile";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,6 +16,11 @@ const router = createBrowserRouter([
         path: "",
         element: <Home />,
       },
+      {
+        path:"/user/profile",
+        element:<Profile/>
+      }
+      ,
       {
         path: "/join",
         element: <Join />,

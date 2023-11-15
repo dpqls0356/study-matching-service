@@ -4,6 +4,7 @@ import { LoggedInContext,UserContext } from "../App";
 
 const Wrapper =styled.div`
     position: fixed;
+    top: 0;
     box-sizing: border-box;
     width: 100%;
     height: 50px;
@@ -41,7 +42,7 @@ function Headers(){
             <Logo href="/">SMS</Logo>
             {loggedIn?
                 <HeaderRight>
-                    <Link href="/users/profile/:id">My Profile</Link>
+                    <Link href="/user/profile">My Profile</Link>
                     <Link href="/logout">Logout</Link>
                 </HeaderRight>
                 :<HeaderRight>

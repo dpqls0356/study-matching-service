@@ -9,7 +9,8 @@ import {
   joinUser,
   kakaoLoginUser,
   loginUser,
-  logoutUser
+  logoutUser,
+  getEditUserInfo
 } from "./Controllers/UserController.js";
 import session from "express-session";
 import { localsMiddleware } from "./middleware.js";
@@ -48,6 +49,7 @@ app.post("/login/kakao", kakaoLoginUser);
 app.get("/oauth2/redirect", googleLogin);
 app.get("/logout",logoutUser);
 app.get("/userinfo",userinfo);
+app.get("/user/getEditUserInfo",getEditUserInfo);
 const handleServer = () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 };
