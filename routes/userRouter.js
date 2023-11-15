@@ -7,6 +7,7 @@ import {
   loginUser,
   logoutUser,
   userinfo,
+  getEditUserInfo,
 } from "../Controllers/UserController.js";
 import imageUploader from "../imageUplodaer.js";
 
@@ -20,6 +21,8 @@ router.post("/editProfile", editProfile);
 router.get("/logout", logoutUser);
 router.get("/userinfo", userinfo);
 router.get("/oauth2/redirect", googleLogin);
+router.get("/getEditUserInfo", getEditUserInfo);
+
 //router.post()
 
 export default router;
