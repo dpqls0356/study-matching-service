@@ -66,17 +66,17 @@ function Join() {
   const createAccount = async (data) => {
     const { username, userid, password, ckpassword, email, birth, address } =
       data;
-    var img;
+    var profileImg;
     // 체킹해야하는 부분
     if (checkGender === false) {
       setGenderError(true);
     } else if (data.password !== data.ckpassword) {
       setPasswordError(true);
     } else {
-      if (data.img.length === 0) {
-        img = "defaultProfileImg.png";
+      if (data.profileImg.length === 0) {
+        profileImg = "defaultProfileImg.png";
       } else {
-        img = data.img[0].name;
+        profileImg = data.profileImg[0].name;
       }
       try {
         setIdError(false);
@@ -89,7 +89,7 @@ function Join() {
           email,
           birth,
           gender,
-          img,
+          profileImg,
         });
         if (response.status === 201) {
           navigate("/login");
@@ -113,7 +113,7 @@ function Join() {
     <Wrapper>
       <JoinForm onSubmit={handleSubmit(createAccount)}>
         <ProfileImg src={defaultProfileImg} />
-        <Input {...register("img")} id="profilePhoto" type="file" />
+        <Input {...register("profileImg")} id="profilePhoto" type="file" />
         <InputDiv>
           <Label htmlFor="username">이름</Label>
           <Input

@@ -109,19 +109,19 @@ function Login() {
       }
     } catch (error) {
       console.log(error);
-      // if(error.response.status===401){
-      //   if(error.response.data.errorpart==="id"){
-      //     setIdError(idError=>!idError);
-      //   }
-      // }
-      // else if(error.response.status===404){
-      //   if(error.response.data.errorpart==="password"){
-      //     setPasswordError(passwordError=>!passwordError);
-      //   }
-      // }
-      // else if(error.response.status===500){
-      //   // 서버오류일땐 어떻게 처리해야함 ?
-      // }
+      if(error.response.status===401){
+        if(error.response.data.errorpart==="id"){
+          setIdError(idError=>!idError);
+        }
+      }
+      else if(error.response.status===404){
+        if(error.response.data.errorpart==="password"){
+          setPasswordError(passwordError=>!passwordError);
+        }
+      }
+      else if(error.response.status===500){
+        // 서버오류일땐 어떻게 처리해야함 ?
+      }
     }
   };
 
