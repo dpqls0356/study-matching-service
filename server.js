@@ -7,7 +7,7 @@ import "./db.js";
 import session from "express-session";
 import { localsMiddleware } from "./middleware.js";
 import userRouter from "./routes/userRouter.js";
-import studyGroupRouter from "./routes/studyGroupRouter.js";
+import studyGroupRouter from "./routes/StudyGroupRouter.js";
 const app = express();
 const PORT = 8080;
 
