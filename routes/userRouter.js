@@ -22,6 +22,7 @@ router.get("/logout", logoutUser);
 router.get("/userinfo", userinfo);
 router.get("/oauth2/redirect", googleLogin);
 router.get("/editUserInfo", getEditUserInfo);
+
 //router.post()
 
 export default router;
