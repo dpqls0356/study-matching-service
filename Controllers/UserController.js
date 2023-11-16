@@ -1,7 +1,7 @@
 import User from "../Models/UserModel.js";
-
+import bcrypt from "bcrypt";
 export const joinUser = async (req, res) => {
-  const { userid, email, img } = req.body;
+  const { userid, email, profileImg } = req.body;
 
   try {
     const [existingUserId, existingEmail] = await Promise.all([
@@ -173,10 +173,12 @@ export const logoutUser = (req, res) => {
 
 export const editProfile = async (req, res) => {
   //프로필 수정
+  
   try {
     //const user = await User.findById(req.session._id);
     const _id = req.session._id;
-    const { username, password, profile } = req.body;
+    let { username, password, profileImg } = req.body;
+    console.log(req.body);
     if (password) {
       password = await bcrypt.hash(password, 10);
     }
@@ -185,13 +187,14 @@ export const editProfile = async (req, res) => {
       {
         username,
         password,
-        profile,
+        profileImg,
       },
       { new: true } //업데이트 된 user 반환
     );
     req.session.username = username;
     res.status(200).json({ message: "프로필 수정 성공", user: updateUser });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       error: "프로필을 수정하는 중에 오류가 발생했습니다. 다시 시도해 주세요",
     });
@@ -203,7 +206,7 @@ export const getEditUserInfo = async (req, res) => {
     console.log(userdata);
     const senddata = {
       userid: userdata.userid,
-      profileImg: userdata.profile,
+      profileImg: userdata.profileImg,
       username: userdata.username,
       birth: userdata.birth,
       gender: userdata.gender,
