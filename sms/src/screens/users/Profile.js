@@ -88,19 +88,89 @@ const SubmitBtn = styled.input`
   margin-top: 30px;
   height: 40px;
 `;
-// 아이디 값 이전이랑 비교
-// 비번 이전이랑 비교
-// 비번 확인비번 비교
-// 빈 데이터는 어떻게 할 것인가?
+
+const Error = styled.div`
+`
+// 비번 이전이랑 비교 ? 
 function Profile(){
     // const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
+    const navigate = useNavigate();
     const {user,changeUser} = useContext(UserContext);
     const [edit, setEdit] = useState(false);
     const [userdata,setUserData] = useState();
     const {register,handleSubmit} = useForm();
     const [gender,setGender] =useState();
+    const [username,setUsername] = useState("");
+    const [password,setPassword] = useState("");
+    const [ckpassword, setCkPassword] = useState("");
+    const [profileImg,setProfileImg] = useState("");
+    const [notMatchError, setNotMatchError] = useState(false);
+    const writeUsername = (e)=>{
+        const inputValue = e.target.value || ''; 
+        setUsername(inputValue);
+    }
+    const writeCkPassword = (e)=>{
+        const inputValue = e.target.value || ''; 
+        setCkPassword(inputValue);
+    }
+    const writePassword = (e)=>{
+        const inputValue = e.target.value || ''; 
+        setPassword(inputValue);
+    }
+    useEffect(()=>{
+        console.log(ckpassword,password);
+        if(password!==ckpassword&&password!==''&&ckpassword!==''){
+            setNotMatchError(true);
+        }
+        else if(password===ckpassword){
+            setNotMatchError(false);
+        }
+    },[ckpassword,password])
     // 수정 데이터 보내는 함수
     const eidtProfile =(data)=>{
+        const {profileImg, username, password} =data;
+        const sendData ={};
+        //이름바꾼경우
+        if(userdata.username!==username){
+            sendData.username = username;
+        }
+        //이미지바꾼경우
+        if(profileImg!==userdata.profileImg){
+            sendData.userProfile =profileImg;
+        }
+        //비번바꾼경우
+        if(password!==""&&notMatchError===false){
+            sendData.password = password;
+        }
+        postEditProfile(sendData);
+    }
+    const postEditProfile=async(sendData)=>{
+        try{
+            const response = await axios.get(`${BASE_URL}/user/editProfile`,sendData,{
+                withCredentials: true
+              });
+            //   정상응답이 왔을때
+              if(response){
+                try{
+                    const userInfo = await axios.get(`${BASE_URL}/user/userinfo`,{
+                      withCredentials: true
+                    });
+                    // console.log("userInfo: "+JSON.stringify(userInfo.data.username));
+                    window.localStorage.setItem('username',userInfo.data.username);
+                    // 데이터가 있으면
+                    changeUser(userInfo);
+                    navigate("/");
+                  }
+                  // 올바른 유저가 세션에 없다면 ?
+                  catch(error){
+          
+                  }
+              }
+        }
+        catch(e){
+            // 에러처리
+        }
+
     }
     // 유저 데이터 가져오는 함수
     const getUserData = async()=>{
@@ -115,6 +185,9 @@ function Profile(){
                 setGender(false);
             }
             setUserData(response.data.senddata);
+            setUsername(response.data.senddata.username);
+            setProfileImg(response.data.senddata.profileImg);
+            // console.log(response.data.senddata);
         }
         catch(e){
 
@@ -134,6 +207,8 @@ function Profile(){
                     <Label htmlFor="username">이름</Label>
                     <Input
                         {...register("username")}
+                        onChange={writeUsername}
+                        value={username}
                         required={true}
                         id="username"
                         type="text"
@@ -148,27 +223,31 @@ function Profile(){
                         required={true}
                         id="userid"
                         type="text"
-                        disabled="true"
+                        disabled={true}
                         placeholder={userdata.userid}
                     />
                     </InputDiv>
-                    {/* {passwordError ? (
-                    <Error>비밀번호가 일치하지않습니다. 다시 입력하세요</Error>
-                    ) : null} */}
                     <InputDiv>
                     <Label htmlFor="password">비밀번호</Label>
                     <Input
                         {...register("password")}
+                        onChange={writePassword}
+                        value={password}
                         required={true}
                         id="password"
                         type="password"
                         placeholder="비밀번호를 입력하세요"
                     />
                     </InputDiv>
+                    {notMatchError ? (
+                    <Error>비밀번호가 일치하지않습니다. 다시 입력하세요</Error>
+                    ) : null}
                     <InputDiv>
                     <Label htmlFor="ckpassword">비밀번호 확인</Label>
                     <Input
                         {...register("ckpassword")}
+                        onChange={writeCkPassword}
+                        value={ckpassword}
                         required={true}
                         id="ckpassword"
                         type="password"
@@ -183,7 +262,7 @@ function Profile(){
                         required={true}
                         id="email"
                         type="email"
-                        disabled="true"
+                        disabled={true}
                         placeholder={userdata.email}
                     />
                     </InputDiv>
@@ -195,7 +274,7 @@ function Profile(){
                         id="birth"
                         type="text"
                         placeholder={userdata.birth}
-                        disabled="true"
+                        disabled={true}
                     />
                     </InputDiv>
                     {/* {genderError ? <Error>성별을 선택해주세요</Error> : null} */}
@@ -229,7 +308,13 @@ function Profile(){
                             <Userinfo>
                                 <UserinfoImg src={defaultProfileImg}/>
                                 <Userinfoname>{userdata.username}</Userinfoname>
-                                <EditProfileBtn onClick={()=>{setEdit(!edit)}}>프로필 수정</EditProfileBtn>
+                                <EditProfileBtn onClick={()=>{
+                                    setEdit(!edit);
+                                    setPassword("");
+                                    setCkPassword("");
+                                    setUsername(userdata.username);
+                                    setProfileImg(userdata.profileImg);
+                                }}>프로필 수정</EditProfileBtn>
                             </Userinfo>
                             <Groupinfo>Study Group View</Groupinfo>
                         </InfoWrapper>
