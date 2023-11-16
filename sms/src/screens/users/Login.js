@@ -78,6 +78,8 @@ function Login() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const postJoin = async (data) => {
+    setIdError(false);
+    setPasswordError(false);
     const { userid, password } = data;
     try {
       const response = await axios.post(`${BASE_URL}/user/login`, {
@@ -86,6 +88,7 @@ function Login() {
       },{
         withCredentials: true
       });
+      console.log(response.status);
       if (response.status === 201) {
 
         // login이 가능하기에 login 상태를 true로 변경하기 - 완료
@@ -104,18 +107,14 @@ function Login() {
         }
         // 올바른 유저가 세션에 없다면 ?
         catch(error){
-
         }
       }
     } catch (error) {
-      console.log(error);
-      if(error.response.status===401){
+      if(error.response.status===404){
         if(error.response.data.errorpart==="id"){
           setIdError(idError=>!idError);
         }
-      }
-      else if(error.response.status===404){
-        if(error.response.data.errorpart==="password"){
+        else if(error.response.data.errorpart==="password"){
           setPasswordError(passwordError=>!passwordError);
         }
       }
