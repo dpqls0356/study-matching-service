@@ -93,9 +93,9 @@ function App() {
     else{
       changeLoggedIn(true);
       changeUser({userid:localStorage.getItem("userid"),username:localStorage.getItem('username')});
+      console.log("true:",loggedIn,user);
     }
   },[]);
-  console.log("true:",loggedIn,user);
   return (
       <div className="App">
         <LoggedInContext.Provider value={{loggedIn,changeLoggedIn}}>

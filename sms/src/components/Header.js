@@ -1,6 +1,9 @@
 import { useContext, useEffect, useState } from "react";
+import { Link,useNavigate } from "react-router-dom";
+import axios from "axios";
 import { styled } from "styled-components";
-import { LoggedInContext,UserContext } from "../App";
+import { BASE_URL } from "../api.js";
+import { LoggedInContext,UserContext } from "../App.js";
 
 const Wrapper =styled.div`
     position: fixed;
@@ -14,7 +17,7 @@ const Wrapper =styled.div`
     background-color: white;
     padding:0px 30px;
 `
-const Logo = styled.a`
+const Logo = styled.div`
     color: #025d91;
     font-size: 30px;
     font-weight: 900;
@@ -23,7 +26,19 @@ const Logo = styled.a`
 const HeaderRight = styled.div`
     display: flex;
 `
-const Link = styled.a`
+const LinkDiv = styled.div`
+    display: flex;
+    align-items: center;
+    color : #025d91;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    border-radius: 15px;
+    height: 30px;
+    padding: 0px 10px;
+    background-color: rgba(0,0,0,0);
+`
+const LogoutBtn = styled.div`
     display: flex;
     align-items: center;
     color : #025d91;
@@ -37,17 +52,43 @@ const Link = styled.a`
 `
 function Headers(){
     const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
+    const {user,changeUser} = useContext(UserContext);
+    const navigate = useNavigate();
+    // 세션파기시켜야함
+    const logout = async()=>{
+        window.localStorage.removeItem('username');
+        window.localStorage.removeItem('userid');
+        changeLoggedIn(false);
+        changeUser();
+        try{
+            const response = await axios.get(`${BASE_URL}/user/logout`);
+            navigate("/");
+        }catch(e){
+
+        }
+    }
     return (
         <Wrapper>
-            <Logo href="/">SMS</Logo>
+            <Logo>
+                <Link style={{color : "#025d91"}} to="/">SMS</Link>
+            </Logo>
             {loggedIn?
                 <HeaderRight>
-                    <Link href="/user/profile">My Profile</Link>
-                    <Link href="/logout">Logout</Link>
+                    <LinkDiv>
+                        <Link style={{color : "#025d91"}} to="/user/profile">My Profile</Link>
+                    </LinkDiv>
+                    <LogoutBtn onClick={logout}>Logout</LogoutBtn>
+                    {/* <LinkDiv>
+                        <Link style={{color : "#025d91"}} to="/logout">Logout</Link>        
+                    </LinkDiv> */}
                 </HeaderRight>
                 :<HeaderRight>
-                    <Link href="/login">Login</Link>
-                    <Link href="/join">Join</Link>
+                    <LinkDiv>
+                        <Link style={{color : "#025d91"}} to="/login">Login</Link>
+                    </LinkDiv>
+                    <LinkDiv>
+                        <Link style={{color : "#025d91"}} to="/join">Join</Link>
+                    </LinkDiv>
                 </HeaderRight>
                 
             }
