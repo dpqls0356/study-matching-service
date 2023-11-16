@@ -146,11 +146,11 @@ function Profile(){
     }
     const postEditProfile=async(sendData)=>{
         try{
-            const response = await axios.get(`${BASE_URL}/user/editProfile`,sendData,{
+            const response = await axios.post(`${BASE_URL}/user/editProfile`,sendData,{
                 withCredentials: true
               });
             //   정상응답이 왔을때
-              if(response){
+              if(response.status===200){
                 try{
                     const userInfo = await axios.get(`${BASE_URL}/user/userinfo`,{
                       withCredentials: true
@@ -163,7 +163,7 @@ function Profile(){
                   }
                   // 올바른 유저가 세션에 없다면 ?
                   catch(error){
-          
+                    //서버오류는 맨 마지막에 하기로함 ...
                   }
               }
         }
@@ -209,7 +209,6 @@ function Profile(){
                         {...register("username")}
                         onChange={writeUsername}
                         value={username}
-                        required={true}
                         id="username"
                         type="text"
                         placeholder="이름을 입력하세요"
@@ -220,7 +219,6 @@ function Profile(){
                     <Label htmlFor="userid">아이디</Label>
                     <Input
                         {...register("userid")}
-                        required={true}
                         id="userid"
                         type="text"
                         disabled={true}
@@ -233,7 +231,6 @@ function Profile(){
                         {...register("password")}
                         onChange={writePassword}
                         value={password}
-                        required={true}
                         id="password"
                         type="password"
                         placeholder="비밀번호를 입력하세요"
@@ -248,7 +245,6 @@ function Profile(){
                         {...register("ckpassword")}
                         onChange={writeCkPassword}
                         value={ckpassword}
-                        required={true}
                         id="ckpassword"
                         type="password"
                         placeholder="비밀번호를 다시 입력해주세요"
@@ -259,7 +255,6 @@ function Profile(){
                     <Label htmlFor="email">이메일</Label>
                     <Input
                         {...register("email")}
-                        required={true}
                         id="email"
                         type="email"
                         disabled={true}
@@ -270,7 +265,6 @@ function Profile(){
                     <Label htmlFor="birth">생년월일</Label>
                     <Input
                         {...register("birth")}
-                        required={true}
                         id="birth"
                         type="text"
                         placeholder={userdata.birth}
