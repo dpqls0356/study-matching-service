@@ -1,8 +1,9 @@
 import User from "../Models/UserModel.js";
 import bcrypt from "bcrypt";
+//import downloadImage from "../imageDownload.js";
 export const joinUser = async (req, res) => {
-  const { userid, email, profileImg } = req.body;
-
+  const { userid, email, gender } = req.body;
+  console.log(req.body);
   try {
     const [existingUserId, existingEmail] = await Promise.all([
       User.findOne({ userid }),
@@ -17,26 +18,33 @@ export const joinUser = async (req, res) => {
         .status(400)
         .json({ errorpart: "email", message: "이미 존재하는 이메일입니다." });
     }
+    if (req.file) {
+      //회원가입시 사진 선택한 경우
+      const newImgUser = await User.create({
+        ...req.body,
+        profileImg: req.file.key,
+      });
+      return res
+        .status(201)
+        .json({ message: "회원가입 성공", user: newImgUser });
+    } else {
+      //회원가입 시 사진 선택 안한 경우
+      console.log("a");
+      const defaultImgUser = await User.create(req.body);
 
-    // if (profile) {
-    //   imageUploader.single("profile")(req, res, async function (err) {
-    //     if (err) {
-    //       console.error("Image upload error:", err);
-    //       return res.status(500).json({ message: "이미지 업로드 실패" });
-    //     }
-
-    //     const { location: profile } = req.file || {}; // S3에서 업로드한 이미지 URL
-    //   });
-    // }
-    const newUser = await User.create(req.body);
-    res.status(201).json({ message: "회원가입 성공", user: newUser });
+      return res
+        .status(201)
+        .json({ message: "회원가입 성공", user: defaultImgUser });
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "서버 에러" });
   }
 };
 
 export const loginUser = async (req, res) => {
   const { userid, password } = req.body;
+
   try {
     if (!userid || !password) {
       return res
@@ -173,7 +181,7 @@ export const logoutUser = (req, res) => {
 
 export const editProfile = async (req, res) => {
   //프로필 수정
-  
+
   try {
     //const user = await User.findById(req.session._id);
     const _id = req.session._id;
