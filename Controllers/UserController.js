@@ -87,47 +87,35 @@ export const kakaoLoginUser = async (req, res) => {
         .json({ message: "카카오 로그인 성공", user: existingUser });
     } else {
       //소셜로그인이 처음 로그인임(회원가입안된상태) 소셜로그인 데이터 db에 저장하기
+      const password = await bcrypt.hash(new Date().toString(), 10);
       const kakaoUser = {
         userid: req.body.data.id,
-        img: req.body.data.properties.profile_image,
-        email: req.body.data.kakao_account.email,
-        username: req.body.data.properties.nickname,
-        password: req.body.data.password,
+        profileImg: req.body.data.properties.profile_image,
+        email,
+        username,
+        password,
         //생일, 성별 어떻게 받을지 생각
         birth: "2023-11-03",
         gender: "male",
       };
-
+      //req.session.userid = kakaoUser.userid;
+      //req.session.username = kakaoUser.username;
       const newUser = await User.create(kakaoUser);
+      //req.session._id = user._id;
 
       return res
         .status(201)
         .json({ message: "카카오 로그인 성공", user: kakaoUser });
     }
-  } catch (erorr) {
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "서버오류" });
   }
 };
 
 export const googleLogin = async (req, res) => {
-  const google_redirect_uri = "http://localhost:8080/oauth2/redirect";
-  const { code } = req.query;
-
   try {
-    const response = await axios.post(
-      `https://oauth2.googleapis.com/token?code=${code}&client_id=${process.env.GOOGLE_CLIENT_ID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&redirect_uri=${google_redirect_uri}&grant_type=authorization_code`
-    ); //받아온 코드로 access_token 얻어오기
-
-    const userInfo = await axios.get(
-      `https://www.googleapis.com/oauth2/v2/userinfo?alt=json`,
-      {
-        headers: {
-          authorization: `Bearer ${response.data.access_token}`,
-        },
-      }
-    ); //access_token을 바탕으로 유저 정보 얻어오기
-    console.log(userInfo);
-    const { email, name } = userInfo.data;
+    const { email, id } = req.body;
     const existingUser = await User.findOne({
       email,
     });
@@ -136,26 +124,25 @@ export const googleLogin = async (req, res) => {
         .status(201)
         .json({ message: "구글 로그인 성공", user: existingUser });
     } else {
+      const password = await bcrypt.hash(new Date().toString(), 10);
       const googleUser = {
-        username: name,
-        userid: "1231",
-        password: "123",
-        ckpassword: "123",
+        username: "a12312",
+        userid: id,
+        password,
         email,
         birth: "2023-11-03",
-        address: "a",
         gender: "male",
-        img: "defaultProfileImg.png",
+        profileImg: "defaultProfileImg.png",
       };
       const newUser = await User.create(googleUser);
       return res
         .status(201)
         .json({ message: "구글 로그인 성공", user: googleUser });
     }
-    //res.status(201).json({ message: "구글로그인성공" });
-    //res.redirect("http://localhost:3000/");
   } catch (error) {
     //에러 처리하기
+    console.log(error);
+    return res.status(500).json({ message: "서버 에러" });
   }
 };
 
@@ -181,7 +168,6 @@ export const logoutUser = (req, res) => {
 
 export const editProfile = async (req, res) => {
   //프로필 수정
-
   try {
     //const user = await User.findById(req.session._id);
     const _id = req.session._id;
@@ -210,16 +196,9 @@ export const editProfile = async (req, res) => {
 };
 export const getEditUserInfo = async (req, res) => {
   if (req.session.userid) {
-    const userdata = await User.findOne({ userid: req.session.userid });
-    console.log(userdata);
-    const senddata = {
-      userid: userdata.userid,
-      profileImg: userdata.profileImg,
-      username: userdata.username,
-      birth: userdata.birth,
-      gender: userdata.gender,
-      email: userdata.email,
-    };
+    const senddata = await User.findOne({ userid: req.session.userid });
+    console.log(senddata);
+
     return res.status(200).json({ senddata });
   } else {
     return res.status(500).json({ message: "not find user" });

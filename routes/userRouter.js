@@ -16,13 +16,11 @@ const router = express.Router();
 router.post("/join", imageUploader.single("file"), joinUser);
 router.post("/login", loginUser);
 router.post("/login/kakao", kakaoLoginUser);
+router.post("/login/google", googleLogin);
 router.post("/editProfile", editProfile);
 
 router.get("/logout", logoutUser);
 router.get("/userinfo", userinfo);
-router.get("/oauth2/redirect", googleLogin);
 router.get("/getEditUserInfo", getEditUserInfo);
-
-//router.post()
 
 export default router;
