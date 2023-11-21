@@ -96,6 +96,7 @@ function Profile(){
     // const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
     const navigate = useNavigate();
     const {user,changeUser} = useContext(UserContext);
+    const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
     const [edit, setEdit] = useState(false);
     const [userdata,setUserData] = useState();
     const {register,handleSubmit} = useForm();
@@ -196,125 +197,133 @@ function Profile(){
     useEffect(()=>{
         setEdit(false);
         getUserData();
+        if(!loggedIn){
+            navigate("/");
+        }
     },[]);
     return (
         <Wrapper>
-            {edit?
-                <EditForm onSubmit={handleSubmit(eidtProfile)}>
-                    <ProfileImg src={defaultProfileImg} />
-                    <Input {...register("img")} id="profilePhoto" type="file" />
-                    <InputDiv>
-                    <Label htmlFor="username">이름</Label>
-                    <Input
-                        {...register("username")}
-                        onChange={writeUsername}
-                        value={username}
-                        id="username"
-                        type="text"
-                        placeholder="이름을 입력하세요"
-                    />
-                    </InputDiv>
-                    {/* {idError ? <Error>이미 존재하는 아이디입니다.</Error> : null} */}
-                    <InputDiv>
-                    <Label htmlFor="userid">아이디</Label>
-                    <Input
-                        {...register("userid")}
-                        id="userid"
-                        type="text"
-                        disabled={true}
-                        placeholder={userdata.userid}
-                    />
-                    </InputDiv>
-                    <InputDiv>
-                    <Label htmlFor="password">비밀번호</Label>
-                    <Input
-                        {...register("password")}
-                        onChange={writePassword}
-                        value={password}
-                        id="password"
-                        type="password"
-                        placeholder="비밀번호를 입력하세요"
-                    />
-                    </InputDiv>
-                    {notMatchError ? (
-                    <Error>비밀번호가 일치하지않습니다. 다시 입력하세요</Error>
-                    ) : null}
-                    <InputDiv>
-                    <Label htmlFor="ckpassword">비밀번호 확인</Label>
-                    <Input
-                        {...register("ckpassword")}
-                        onChange={writeCkPassword}
-                        value={ckpassword}
-                        id="ckpassword"
-                        type="password"
-                        placeholder="비밀번호를 다시 입력해주세요"
-                    />
-                    </InputDiv>
-                    {/* {emailError ? <Error>이미 존재하는 이메일입니다.</Error> : null} */}
-                    <InputDiv>
-                    <Label htmlFor="email">이메일</Label>
-                    <Input
-                        {...register("email")}
-                        id="email"
-                        type="email"
-                        disabled={true}
-                        placeholder={userdata.email}
-                    />
-                    </InputDiv>
-                    <InputDiv>
-                    <Label htmlFor="birth">생년월일</Label>
-                    <Input
-                        {...register("birth")}
-                        id="birth"
-                        type="text"
-                        placeholder={userdata.birth}
-                        disabled={true}
-                    />
-                    </InputDiv>
-                    {/* {genderError ? <Error>성별을 선택해주세요</Error> : null} */}
-                    <InputDiv>
-                    <Label>성별</Label>
-                    {gender?
-                    <Genderbox>
-                        <GenderBtn >
-                            남
-                        </GenderBtn>
-                        <GenderBtn style={{backgroundColor:"#035D91",color:"white"}}>
-                            여
-                        </GenderBtn>
-                    </Genderbox>
-                    :
-                    <Genderbox>
-                        <GenderBtn style={{backgroundColor:"#035D91",color:"white"}}>
-                            남
-                        </GenderBtn>
-                        <GenderBtn>
-                            여
-                        </GenderBtn>
-                    </Genderbox>
-                    }
-                    </InputDiv>
-                    <SubmitBtn type="submit" value="수정하기"></SubmitBtn>
-                </EditForm>
-                :<div style={{height:'100%'}}>
-                    {userdata?
-                        <InfoWrapper>
-                            <Userinfo>
-                                <UserinfoImg src={defaultProfileImg}/>
-                                <Userinfoname>{userdata.username}</Userinfoname>
-                                <EditProfileBtn onClick={()=>{
-                                    setEdit(!edit);
-                                    setPassword("");
-                                    setCkPassword("");
-                                    setUsername(userdata.username);
-                                    setProfileImg(userdata.profileImg);
-                                }}>프로필 수정</EditProfileBtn>
-                            </Userinfo>
-                            <Groupinfo>Study Group View</Groupinfo>
-                        </InfoWrapper>
-                        :null
-                    }
-                </div>
+            {loggedIn?
+                <div>
+                    {edit?
+                        <EditForm onSubmit={handleSubmit(eidtProfile)}>
+                            <ProfileImg src={defaultProfileImg} />
+                            <Input {...register("img")} id="profilePhoto" type="file" />
+                            <InputDiv>
+                            <Label htmlFor="username">이름</Label>
+                            <Input
+                                {...register("username")}
+                                onChange={writeUsername}
+                                value={username}
+                                id="username"
+                                type="text"
+                                placeholder="이름을 입력하세요"
+                            />
+                            </InputDiv>
+                            {/* {idError ? <Error>이미 존재하는 아이디입니다.</Error> : null} */}
+                            <InputDiv>
+                            <Label htmlFor="userid">아이디</Label>
+                            <Input
+                                {...register("userid")}
+                                id="userid"
+                                type="text"
+                                disabled={true}
+                                placeholder={userdata.userid}
+                            />
+                            </InputDiv>
+                            <InputDiv>
+                            <Label htmlFor="password">비밀번호</Label>
+                            <Input
+                                {...register("password")}
+                                onChange={writePassword}
+                                value={password}
+                                id="password"
+                                type="password"
+                                placeholder="비밀번호를 입력하세요"
+                            />
+                            </InputDiv>
+                            {notMatchError ? (
+                            <Error>비밀번호가 일치하지않습니다. 다시 입력하세요</Error>
+                            ) : null}
+                            <InputDiv>
+                            <Label htmlFor="ckpassword">비밀번호 확인</Label>
+                            <Input
+                                {...register("ckpassword")}
+                                onChange={writeCkPassword}
+                                value={ckpassword}
+                                id="ckpassword"
+                                type="password"
+                                placeholder="비밀번호를 다시 입력해주세요"
+                            />
+                            </InputDiv>
+                            {/* {emailError ? <Error>이미 존재하는 이메일입니다.</Error> : null} */}
+                            <InputDiv>
+                            <Label htmlFor="email">이메일</Label>
+                            <Input
+                                {...register("email")}
+                                id="email"
+                                type="email"
+                                disabled={true}
+                                placeholder={userdata.email}
+                            />
+                            </InputDiv>
+                            <InputDiv>
+                            <Label htmlFor="birth">생년월일</Label>
+                            <Input
+                                {...register("birth")}
+                                id="birth"
+                                type="text"
+                                placeholder={userdata.birth}
+                                disabled={true}
+                            />
+                            </InputDiv>
+                            {/* {genderError ? <Error>성별을 선택해주세요</Error> : null} */}
+                            <InputDiv>
+                            <Label>성별</Label>
+                            {gender?
+                            <Genderbox>
+                                <GenderBtn >
+                                    남
+                                </GenderBtn>
+                                <GenderBtn style={{backgroundColor:"#035D91",color:"white"}}>
+                                    여
+                                </GenderBtn>
+                            </Genderbox>
+                            :
+                            <Genderbox>
+                                <GenderBtn style={{backgroundColor:"#035D91",color:"white"}}>
+                                    남
+                                </GenderBtn>
+                                <GenderBtn>
+                                    여
+                                </GenderBtn>
+                            </Genderbox>
+                            }
+                            </InputDiv>
+                            <SubmitBtn type="submit" value="수정하기"></SubmitBtn>
+                        </EditForm>
+                        :<div style={{height:'100%'}}>
+                            {userdata?
+                                <InfoWrapper>
+                                    <Userinfo>
+                                        <UserinfoImg src={defaultProfileImg}/>
+                                        <Userinfoname>{userdata.username}</Userinfoname>
+                                        <EditProfileBtn onClick={()=>{
+                                            setEdit(!edit);
+                                            setPassword("");
+                                            setCkPassword("");
+                                            setUsername(userdata.username);
+                                            setProfileImg(userdata.profileImg);
+                                        }}>프로필 수정</EditProfileBtn>
+                                    </Userinfo>
+                                    <Groupinfo>Study Group View</Groupinfo>
+                                </InfoWrapper>
+                                :null
+                            }
+                        </div>
+                    }</div>
+                :
+                <div>잘못된 접근입니다.</div>
             }
         </Wrapper>
     )

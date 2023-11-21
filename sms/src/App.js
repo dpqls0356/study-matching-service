@@ -64,6 +64,7 @@ a{
 }
 .App{
   height: 100%;
+  width: 100vw;
 }
 .App > div:nth-child(2){
   margin-top: 50px;
