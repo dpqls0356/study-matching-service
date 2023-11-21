@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
     required: true,
   },
   profileImg: { type: String },
+  studyGroup: { type: mongoose.Schema.Types.ObjectId, ref: "StudyGroup" },
 });
 userSchema.pre("save", async function () {
   try {
