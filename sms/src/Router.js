@@ -7,6 +7,7 @@ import KakaoLogin from "./screens/users/KakaoLogin";
 import GoogleLogin  from "./screens/users/GoogleLogin";
 // import Logout from "./screens/users/Logout";
 import Profile from "./screens/users/Profile";
+import CreatStudyGroup from "./screens/studyGroup/CreatStudyGroup";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path:"/oauth2/redirect",
         element:<GoogleLogin/>
+      },
+      ,{
+        path:"/studygroup/creat",
+        element:<CreatStudyGroup/>
       },
       // {
       //   path:"/logout",
