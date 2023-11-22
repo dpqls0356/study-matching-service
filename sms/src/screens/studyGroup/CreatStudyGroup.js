@@ -11,6 +11,9 @@ import { LoggedInContext,UserContext } from "../../App.js";
 //          -- type을 radio로 하느냐 checkbox로 하느냐에 따라 디자인이 바뀐다.
 //          -- 라디오는 하나만 선택된다고 생각하는데 아니다 .. 여러개 선택 가능하다...
 // select 사용법 
+// 
+{/* 왜 이렇게 넣으면 안되는거지 ? */}
+{/* onChange={setGender("female")}onChange={setGender("male")}onChange={setGender("both")} */}
 const Wrapper = styled.div`
   padding: 100px 0px 100px 0px;
   display: flex;
@@ -22,7 +25,7 @@ const Wrapper = styled.div`
 `;
 const GroupCreatForm = styled.form`
   height: 60%;
-  width: 500px;
+  width: 700px;
   display: flex;
   flex-direction: column;
 `;
@@ -92,15 +95,34 @@ function CreatStudyGroup(){
 
     // 온오프라인 select
     const [online, setOnline] = useState(true);
+
+    // 성별 select
+    const [gender,setGender] = useState('');
     // 데이터 전송
-    const postCreatGroup=()=>{
-        
+    const postCreatGroup=async(data)=>{
+        try{
+            const respone = await axios.post(`${BASE_URL}/studyGroup/create`,{
+                groupName:data.studyname,
+                isOnline:online,
+                minAge:selectedMinAge,
+                maxAge:selectedMaxAge,
+                region:data.region,
+                gender:gender,
+                studyCategory:data.study,
+                maxCapacity:5,
+            },{withCredentials: true});
+            console.log(respone);
+        }catch(e){
+
+        }
     }
     // select option
     return(
         <Wrapper>
             {loggedIn?
-                <GroupCreatForm htmlFor="creatgroupform" onSubmit={postCreatGroup}>
+                <GroupCreatForm htmlFor="creatgroupform" onSubmit={
+                    handleSubmit(postCreatGroup)
+                }>
                     <InputDiv>
                         <Label htmlFor="studyname">스터디 이름</Label>
                         <Input 
@@ -131,11 +153,11 @@ function CreatStudyGroup(){
                             null
                             :
                             <InputDiv>
-                                <Label htmlFor="regionCategory">지역</Label>
+                                <Label htmlFor="region">지역</Label>
                                 <Input 
-                                {...register("regionCategory")}
+                                {...register("region")}
                                 required={true}
-                                id="regionCategory"
+                                id="region"
                                 type="text"
                                 placeholder="지역을 입력하세요"
                                 ></Input>
@@ -165,29 +187,35 @@ function CreatStudyGroup(){
                         <Label htmlFor="gender">성별</Label>
                         <CheckBox>
                             <Label>여성</Label>
-                            <Input name="gender" type="radio" value="" id="female"></Input>
+                            <Input name="gender" type="radio" value="" id="female" onClick={()=>(
+                                setGender("female")
+                            )}></Input>
                         </CheckBox>
                         <CheckBox>
                             <Label>남성</Label>
-                            <Input name="gender" type="radio" value="" id="male"></Input>
+                            <Input name="gender" type="radio" value="" id="male" onClick={()=>(
+                                setGender("male")
+                            )}></Input>
                         </CheckBox>
                         <CheckBox>
                             <Label>성별무관</Label>
-                            <Input name="gender" type="radio" value="" id="either"></Input>
+                            <Input name="gender" type="radio" value="" id="both" onClick={()=>(
+                                setGender("both")
+                            )}></Input>
                         </CheckBox>
                     </InputDiv>
                     {/* 해시태그로 여러 개(유사한 단어 체크) 받을 수 있도록  */}
                     <InputDiv>
-                        <Label htmlFor="studyCategory">스터디</Label>
+                        <Label htmlFor="study">스터디</Label>
                         <Input 
-                        {...register("studyCategory")}
+                        {...register("study")}
                         required={true}
-                        id="studyCategory"
+                        id="study"
                         type="text"
                         placeholder="스터디 종류를 입력하세요( #토익 #토익스터디 )"
                         ></Input>
                     </InputDiv>
-                    <SubmitBtn value="그룹 생성하기"></SubmitBtn>
+                    <SubmitBtn type="submit" value="그룹 생성하기"></SubmitBtn>
                 </GroupCreatForm>
             :   
             // 생성불가 : 로그인하라고 알리기
