@@ -4,28 +4,37 @@ import * as errors from "../error.js";
 
 export const createStudyGroup = async (req, res) => {
   console.log(req.body);
-  const { groupName, maxCapacity, ageCategory, studyCategory, regionCategory } =
-    req.body;
-  // const { username } = req.body;
-  // const user = await User.findOne({ username });
+  const {
+    groupName,
+    maxCapacity,
+    minAge,
+    maxAge,
+    isOnline,
+    region,
+    gender,
+    studyCategory,
+  } = req.body;
 
-  //기존데이터 포함해서  applicant 이런거 어떻게 깔끔하게 넣을지 생각해보기
   try {
     const newStudyGroup = await StudyGroup.create({
       masterId: req.session._id,
       groupName,
+      isOnline,
+      minAge, // min age max age로 수정
+      maxAge,
       maxCapacity,
-      ageCategory, // min age max age로 수정
+      gender,
+      region,
       studyCategory,
-      regionCategory,
     });
     const user = await User.findById(req.session._id);
-    user.studyGroup.push(newStudyGroup._id);
+    // user.studyGroup.push(newStudyGroup._id);
     await user.save();
     res
       .status(201)
       .json({ message: "그룹 생성 성공", studyGroup: newStudyGroup });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: errors.SERVER_ERROR_MESSAGE });
   }
 };
