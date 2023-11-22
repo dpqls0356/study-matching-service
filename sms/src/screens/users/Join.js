@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
@@ -48,7 +48,13 @@ const Label = styled.label`
 const GenderBtn = styled.div`
   width: 35%;
   height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => (props.clicked ? "#035D91" : "white")};
+  color: ${(props) => (props.clicked ? "white" : "#035D91")};
 `;
+
 const SubmitBtn = styled.input`
   margin-top: 30px;
   height: 40px;
@@ -59,52 +65,59 @@ function Join() {
   const [checkGender, setCheckGender] = useState(false);
   const [genderError, setGenderError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [idError,setIdError] = useState(false);
-  const [emailError,setEmailError] = useState(false);
+  const [idError, setIdError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+
+  const createFormData = (data) => {
+    const { username, userid, password, email, birth, profileImg } = data;
+
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("userid", userid);
+    formData.append("password", password);
+    formData.append("email", email);
+    formData.append("birth", birth);
+    formData.append("gender", gender);
+    if (profileImg && profileImg.length > 0) {
+      formData.append("file", profileImg[0]);
+    } else {
+      formData.append("profileImg", "defaultProfileImg.png");
+    }
+
+    return formData;
+  };
+
   const createAccount = async (data) => {
-    const { username, userid, password, ckpassword, email, birth, address } =
-      data;
-    var profileImg;
+    const formData = createFormData(data);
     // 체킹해야하는 부분
     if (checkGender === false) {
       setGenderError(true);
     } else if (data.password !== data.ckpassword) {
       setPasswordError(true);
     } else {
-      if (data.profileImg.length === 0) {
-        profileImg = "defaultProfileImg.png";
-      } else {
-        profileImg = data.profileImg[0].name;
-      }
       try {
         setIdError(false);
         setEmailError(false);
-        const response = await axios.post(`${BASE_URL}/user/join`, {
-          username,
-          userid,
-          password,
-          ckpassword,
-          email,
-          birth,
-          gender,
-          profileImg,
+        const response = await axios.post(`${BASE_URL}/user/join`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
         if (response.status === 201) {
           navigate("/login");
         }
       } catch (error) {
-        if(error.response.status===400){
-          if(error.response.data.errorpart==="id"){
-            setIdError(idError=>!idError);
+        if (error.response.status === 400) {
+          if (error.response.data.errorpart === "id") {
+            setIdError((idError) => !idError);
+          } else if (error.response.data.errorpart === "email") {
+            setEmailError((emailError) => !emailError);
           }
-          else if(error.response.data.errorpart==="email"){
-            setEmailError(emailError=>!emailError);
-          }
-        }
-        else if(error.response.status===500){
+        } else if (error.response.status === 500) {
           // 회원가입 실패 이유가 먼디요 ?
+          console.log(error.response.data.message);
         }
       }
     }
@@ -182,6 +195,7 @@ function Join() {
         <InputDiv>
           <Label>성별</Label>
           <GenderBtn
+            clicked={gender === "male"}
             onClick={() => {
               setGender("male");
               setCheckGender(!checkGender);
@@ -190,6 +204,7 @@ function Join() {
             남
           </GenderBtn>
           <GenderBtn
+            clicked={gender === "female"}
             onClick={() => {
               setGender("female");
               setCheckGender(!checkGender);

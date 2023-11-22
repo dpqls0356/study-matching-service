@@ -9,20 +9,18 @@ import {
   userinfo,
   getEditUserInfo,
 } from "../Controllers/UserController.js";
-// import imageUploader from "../imageUplodaer.js";
+import imageUploader from "../imageUploader.js";
 
 const router = express.Router();
 
-router.post("/join", /*imageUploader.single("images"),*/ joinUser);
+router.post("/join", imageUploader.single("file"), joinUser);
 router.post("/login", loginUser);
 router.post("/login/kakao", kakaoLoginUser);
+router.post("/login/google", googleLogin);
 router.post("/editProfile", editProfile);
 
 router.get("/logout", logoutUser);
 router.get("/userinfo", userinfo);
-router.get("/oauth2/redirect", googleLogin);
 router.get("/getEditUserInfo", getEditUserInfo);
-
-//router.post()
 
 export default router;
