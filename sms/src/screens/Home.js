@@ -41,16 +41,20 @@ function Home(){
         <Wrapper>
             <WrapperTop>
                 <MainViewCol>
-                    <Link to="/studygroup/creat">
+                    <Link style={{height:'30%'}} to="/studygroup/creat">
                         <MainViewColBtn>스터디 그룹 만들기</MainViewColBtn>
+                    </Link>
+                    <Link style={{height:'30%'}}>
+                        <MainViewColBtn>스터디 그룹 찾기</MainViewColBtn>
                     </Link>
                 </MainViewCol>
                 <MainViewCol>
-                    <MainViewColBtn>스터디 그룹 찾기</MainViewColBtn>
-
+                <MainViewColBtn>스터디 추천</MainViewColBtn>
                 </MainViewCol>
                 <MainViewCol>
-                <MainViewColBtn>스터디 추천</MainViewColBtn>
+                <Link to="/studygroup/viewmystudy">
+                    <MainViewColBtn>내 스터디 보기</MainViewColBtn>
+                </Link>
             </MainViewCol>
             </WrapperTop>
         </Wrapper>

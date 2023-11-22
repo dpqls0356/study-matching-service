@@ -8,6 +8,7 @@ import GoogleLogin  from "./screens/users/GoogleLogin";
 // import Logout from "./screens/users/Logout";
 import Profile from "./screens/users/Profile";
 import CreatStudyGroup from "./screens/studyGroup/CreatStudyGroup";
+import ViewMyStudy from "./screens/studyGroup/ViewMyStudy";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         path:"/studygroup/creat",
         element:<CreatStudyGroup/>
       },
+      ,{
+        path:"/studygroup/viewmystudy",
+        element:<ViewMyStudy/>
+      }
       // {
       //   path:"/logout",
       //   element:<Logout/>
