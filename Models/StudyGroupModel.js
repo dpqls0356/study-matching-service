@@ -10,9 +10,13 @@ const studyGroupSchema = mongoose.Schema({
   //ChatRoomId 추후에 추가
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  ageCategroy: { type: Number }, // min age max age로 수정
-  regionCategroy: { type: String },
-  studyCategroy: { type: String },
+  // min age max age로 수정
+  isOnline: { type: Boolean, required: true },
+  minAge: { type: Number },
+  maxAge: { type: Number },
+  region: { type: String },
+  gender: { type: String, required: true },
+  studyCategory: { type: String, required: true },
   maxCapacity: { type: Number, required: true },
   //calenderId 추후에 추가
 });
