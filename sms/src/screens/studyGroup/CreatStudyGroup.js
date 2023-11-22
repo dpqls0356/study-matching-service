@@ -65,36 +65,31 @@ function CreatStudyGroup(){
     const {register, handleSubmit } = useForm();
     const navigate = useNavigate();
     // 나이 select
-    const [selectedMaxAge, setSelectedMaxAge] = useState('1');
-    const [selectedMinAge, setSelectedMinAge] = useState('1');
+    const [selectedMaxAge, setSelectedMaxAge] = useState(1);
+    const [selectedMinAge, setSelectedMinAge] = useState(1);
     const [ageError, setAgeError] = useState(false);
     const numbers = Array.from({ length: 100 }, (_, index) => index + 1);
+    // 자꾸 나이 비교에서 에러가 나길래 변경된 데이터 값이 바로 반영이 안되나 싶었는데
+    // 데이터타입을 int로 안바꾸고 문자열이어서 비교가 제대로 안되던것 ...
     const handleMinAgeSelectChange = (event) => {
-        console.log("minchange");
-        setSelectedMinAge(event.target.value);
+        setSelectedMinAge(parseInt(event.target.value));
     };
     const handleMaxAgeSelectChange = (event) => {
-        console.log("maxchange");
-        setSelectedMaxAge(event.target.value);
+        setSelectedMaxAge(parseInt(event.target.value));
     };
     const checkAgeError=()=>{
-        console.log(selectedMinAge,selectedMaxAge);
-        // 최대최소가 문제가 있고 에러창이 안떠있는경우
-        console.log(selectedMaxAge<selectedMinAge);
         if(selectedMaxAge<selectedMinAge&&!ageError){
-            console.log("here");
             setAgeError(!ageError);
         }
-        // 최대최소 문제가 없고 에러창이 떠있는 경우
         else if(selectedMaxAge>=selectedMinAge&&ageError){
-            console.log("not error");
             setAgeError(!ageError);
         }
     }
-    // 왜 실행순서가 
     useEffect(()=>{
         checkAgeError();
     },[selectedMaxAge,selectedMinAge])
+
+
     // 온오프라인 select
     const [online, setOnline] = useState(true);
     // 데이터 전송
@@ -175,6 +170,10 @@ function CreatStudyGroup(){
                         <CheckBox>
                             <Label>남성</Label>
                             <Input name="gender" type="radio" value="" id="male"></Input>
+                        </CheckBox>
+                        <CheckBox>
+                            <Label>성별무관</Label>
+                            <Input name="gender" type="radio" value="" id="either"></Input>
                         </CheckBox>
                     </InputDiv>
                     {/* 해시태그로 여러 개(유사한 단어 체크) 받을 수 있도록  */}
