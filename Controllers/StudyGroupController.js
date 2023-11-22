@@ -27,9 +27,16 @@ export const createStudyGroup = async (req, res) => {
       region,
       studyCategory,
     });
-    const user = await User.findById(req.session._id);
-    // user.studyGroup.push(newStudyGroup._id);
-    await user.save();
+    //const user = await User.findById(req.session._id);
+    //console.log(newStudyGroup._id);
+    const user = await User.findByIdAndUpdate(
+      req.session._id,
+      {
+        $push: { studyGroup: newStudyGroup._id },
+      },
+      { new: true }
+    );
+    // console.log(user);
     res
       .status(201)
       .json({ message: "그룹 생성 성공", studyGroup: newStudyGroup });
@@ -53,6 +60,42 @@ export const deleteStudyGroup = async (req, res) => {
     );
     res.status(200).json({ message: "그룹 삭제 성공" });
   } catch (error) {
+    res.status(500).json({ message: errors.SERVER_ERROR_MESSAGE });
+  }
+};
+export const viewMyGroup = async (req, res) => {
+  try {
+    const myId = req.session._id;
+    const user = await User.findById(myId);
+    console.log(user.studyGroup);
+    const allStudyGroup = await StudyGroup.find({
+      //모든 그룹
+      _id: { $in: user.studyGroup },
+    });
+    const allStudyGroupData = allStudyGroup.map((group) => ({
+      members: group.members.length,
+      maxCapacity: group.maxCapacity,
+      isOnline: group.isOnline,
+      region: group.region,
+    }));
+    const masterStudyGroup = await StudyGroup.find({
+      //내가 방장인 스터디그룹
+      _id: { $in: user.studyGroup },
+      masterId: myId,
+    });
+    const masterStudyGroupData = masterStudyGroup.map((group) => ({
+      members: group.members.length,
+      maxCapacity: group.maxCapacity,
+      isOnline: group.isOnline,
+      region: group.region,
+    }));
+    res.status(200).json({
+      message: "내 그룹 보기 성공",
+      allStudyGroup: allStudyGroupData,
+      masterStudyGroup: masterStudyGroupData,
+    });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: errors.SERVER_ERROR_MESSAGE });
   }
 };
