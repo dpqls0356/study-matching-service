@@ -4,9 +4,12 @@ import {
   createStudyGroup,
   inquiryApplicationList,
   joinStudyGroup,
+  viewMyGroup,
 } from "../Controllers/StudyGroupController.js";
 
 const router = express.Router();
+
+router.get("/view", viewMyGroup);
 
 router.post("/create", createStudyGroup);
 router.post("/join", joinStudyGroup);
