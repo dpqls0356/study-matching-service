@@ -27,6 +27,13 @@ export const createStudyGroup = async (req, res) => {
       region,
       studyCategory,
     });
+    await StudyGroup.findByIdAndUpdate(
+      newStudyGroup._id,
+      {
+        $push: { members: newStudyGroup.masterId },
+      },
+      { new: true }
+    );
     //const user = await User.findById(req.session._id);
     //console.log(newStudyGroup._id);
     const user = await User.findByIdAndUpdate(
@@ -73,6 +80,7 @@ export const viewMyGroup = async (req, res) => {
       _id: { $in: user.studyGroup },
     });
     const allStudyGroupData = allStudyGroup.map((group) => ({
+      studyname : group.groupName,
       members: group.members.length,
       maxCapacity: group.maxCapacity,
       isOnline: group.isOnline,
@@ -84,6 +92,7 @@ export const viewMyGroup = async (req, res) => {
       masterId: myId,
     });
     const masterStudyGroupData = masterStudyGroup.map((group) => ({
+      studyname : group.groupName,
       members: group.members.length,
       maxCapacity: group.maxCapacity,
       isOnline: group.isOnline,
