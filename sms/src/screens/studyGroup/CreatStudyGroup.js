@@ -112,6 +112,7 @@ function CreatStudyGroup(){
                 maxCapacity:5,
             },{withCredentials: true});
             console.log(respone);
+            navigate("/");
         }catch(e){
 
         }
