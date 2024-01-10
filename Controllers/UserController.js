@@ -173,6 +173,8 @@ export const logoutUser = async(req, res) => {
   console.log("-----------logout session---------------");
   console.log(req.session);
   req.session.destroy();
+  console.log(req.session);
+  res.status(200).json({});
 };
 
 export const editProfile = async (req, res) => {
