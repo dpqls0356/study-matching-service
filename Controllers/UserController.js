@@ -63,8 +63,8 @@ export const loginUser = async (req, res) => {
         message: "비밀번호가 일치하지않습니다.",
       });
     }
+    //세션 추가하기
     req.session._id = user._id;
-    req.session.userid = user.userid;
     req.session.username = user.username;
     res.status(201).json({ message: "로그인 성공" });
   } catch (error) {
@@ -81,6 +81,9 @@ export const kakaoLoginUser = async (req, res) => {
       email,
     });
     if (existingUser) {
+      //세션추가
+      req.session._id = existingUser._id;
+      req.session.username = existingUser.username;
       //카카오나 구글이메일로 회원가입하고 소셜 로그인시 기존 정보로 로그인 시키고 유저 정보를 줌
       return res
         .status(201)
@@ -98,11 +101,10 @@ export const kakaoLoginUser = async (req, res) => {
         birth: "2023-11-03",
         gender: "male",
       };
-      //req.session.userid = kakaoUser.userid;
-      //req.session.username = kakaoUser.username;
-      const newUser = await User.create(kakaoUser);
-      //req.session._id = user._id;
 
+      const newUser = await User.create(kakaoUser);
+      req.session._id = newUser._id;
+      req.session.username = newUser.username;
       return res
         .status(201)
         .json({ message: "카카오 로그인 성공", user: kakaoUser });
@@ -119,7 +121,10 @@ export const googleLogin = async (req, res) => {
     const existingUser = await User.findOne({
       email,
     });
+    
     if (existingUser) {
+      req.session._id = existingUser._id;
+      req.session.username = existingUser.username;
       return res
         .status(201)
         .json({ message: "구글 로그인 성공", user: existingUser });
@@ -135,6 +140,8 @@ export const googleLogin = async (req, res) => {
         profileImg: "defaultProfileImg.png",
       };
       const newUser = await User.create(googleUser);
+      req.session._id = newUser._id;
+      req.session.username = newUser.username;
       return res
         .status(201)
         .json({ message: "구글 로그인 성공", user: googleUser });
@@ -151,19 +158,21 @@ export const userinfo = async (req, res) => {
   console.log("======================");
   console.log(req.session);
   console.log("======================");
-  if (!req.session.userid) {
+  if (!req.session._id) {
     return res.status(404).json({ message: "해당 유저가 존재하지않습니다." });
   } else {
     //여기서 데이터 값이 제대로 안날아감 그래서 userInfo가 undefined인 상태
-    const userinfo = await User.findOne({ userid: req.session.userid });
+    const userinfo = await User.findOne({ _id: req.session._id });
     return res
       .status(200)
-      .json({ userid: userinfo.userid, username: userinfo.username });
+      .json({ _id: userinfo._id, username: userinfo.username });
   }
 };
-export const logoutUser = (req, res) => {
-  req.session.destroy();
+export const logoutUser = async(req, res) => {
+  var session = req.session;
+  console.log("-----------logout session---------------");
   console.log(req.session);
+  req.session.destroy();
 };
 
 export const editProfile = async (req, res) => {
@@ -195,8 +204,8 @@ export const editProfile = async (req, res) => {
   }
 };
 export const getEditUserInfo = async (req, res) => {
-  if (req.session.userid) {
-    const senddata = await User.findOne({ userid: req.session.userid });
+  if (req.session._id) {
+    const senddata = await User.findOne({ _id: req.session._id });
     console.log(senddata);
 
     return res.status(200).json({ senddata });
