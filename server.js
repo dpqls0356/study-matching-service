@@ -5,7 +5,7 @@ import cors from "cors";
 import "./db.js";
 
 import session from "express-session";
-import { localsMiddleware } from "./middleware.js";
+// import { localsMiddleware } from "./middleware.js";
 import userRouter from "./routes/userRouter.js";
 import studyGroupRouter from "./routes/StudyGroupRouter.js";
 const app = express();
@@ -36,7 +36,7 @@ app.use(
 //           next();
 //       })
 //   });
-app.use(localsMiddleware);
+// app.use(localsMiddleware);
 app.use("/user", userRouter);
 app.use("/studyGroup", studyGroupRouter);
 

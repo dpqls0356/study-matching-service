@@ -4,6 +4,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createGlobalStyle } from "styled-components";
 import Header from "./components/Header.js";
 import GoogleButton from "./screens/users/GoogleLogin.js";
+import axios from "axios";
+import { BASE_URL } from "./api.js";
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -70,11 +72,10 @@ a{
   margin-top: 50px;
 }
 `;
-
-// export const loggedState = atom({
-//   key:'loggedState',
-//   default:false,
-// })
+// localStorage를 안써도 되는 이유
+// app 파일이 리렌더링 될때마다 통신하는게 싫었다
+// 그런데 다른 페이지가 띄워질때 아울렛이 리렌더링이 되는 거지 app이 리렌더링 되는게 아니었음 ㅇㅇ ...
+// 그래서 useContext에 처음 app이 리렌더링 될 때 데이터 받아와서 넣어두면 로그인 유지됨
 export const LoggedInContext = createContext();
 export const UserContext = createContext();
 function App() {
@@ -86,16 +87,26 @@ function App() {
   const changeUser = (addUser) =>{
     setUser(addUser);
   }
-  useEffect(()=>{
-    if(localStorage.getItem('userid')===null){
-      changeLoggedIn(false);
-      console.log("null: ",loggedIn,user);
-    }
-    else{
+  useEffect(async()=>{
+    try{
+      const data = await axios.get(`${BASE_URL}/user/userinfo`,
+      { withCredentials: true});
+      console.log(data);
+      changeUser({userid:data.userid,username:data.username});
       changeLoggedIn(true);
-      changeUser({userid:localStorage.getItem("userid"),username:localStorage.getItem('username')});
-      console.log("true:",loggedIn,user);
     }
+    catch(e){
+        console.log(e.request.response);
+    }
+    // if(localStorage.getItem('userid')===null){
+    //   changeLoggedIn(false);
+    //   console.log("null: ",loggedIn,user);
+    // }
+    // else{
+    //   changeLoggedIn(true);
+    //   changeUser({userid:localStorage.getItem("userid"),username:localStorage.getItem('username')});
+    //   console.log("true:",loggedIn,user);
+    // }
   },[]);
   return (
       <div className="App">
