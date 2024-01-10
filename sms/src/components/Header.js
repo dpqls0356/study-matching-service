@@ -56,15 +56,16 @@ function Headers(){
     const navigate = useNavigate();
     // 세션파기시켜야함
     const logout = async()=>{
-        window.localStorage.removeItem('username');
-        window.localStorage.removeItem('userid');
-        changeLoggedIn(false);
-        changeUser();
+        console.log("logout try");
         try{
-            const response = await axios.get(`${BASE_URL}/user/logout`);
+            const response = await axios.get(`${BASE_URL}/user/logout`,{ withCredentials: true});
+            console.log(response);
+            changeLoggedIn(false);
+            changeUser("");
             navigate("/");
+            
         }catch(e){
-
+            console.log(e);
         }
     }
     return (
