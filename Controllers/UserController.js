@@ -1,6 +1,7 @@
 import User from "../Models/UserModel.js";
 import bcrypt from "bcrypt";
 //import downloadImage from "../imageDownload.js";
+
 export const joinUser = async (req, res) => {
   const { userid, email, gender } = req.body;
   console.log(req.body);
@@ -66,6 +67,7 @@ export const loginUser = async (req, res) => {
     //세션 추가하기
     req.session._id = user._id;
     req.session.username = user.username;
+
     res.status(201).json({ message: "로그인 성공" });
   } catch (error) {
     res.status(500).json({ message: "서버 오류" });
@@ -121,7 +123,7 @@ export const googleLogin = async (req, res) => {
     const existingUser = await User.findOne({
       email,
     });
-    
+
     if (existingUser) {
       req.session._id = existingUser._id;
       req.session.username = existingUser.username;
@@ -168,7 +170,7 @@ export const userinfo = async (req, res) => {
       .json({ _id: userinfo._id, username: userinfo.username });
   }
 };
-export const logoutUser = async(req, res) => {
+export const logoutUser = async (req, res) => {
   var session = req.session;
   console.log("-----------logout session---------------");
   console.log(req.session);
