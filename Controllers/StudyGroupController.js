@@ -3,7 +3,7 @@ import User from "../Models/UserModel.js";
 import * as errors from "../error.js";
 
 export const createStudyGroup = async (req, res) => {
-  console.log(req.body);
+  console.log("그룹생성", req.body);
   const {
     groupName,
     maxCapacity,
@@ -53,6 +53,7 @@ export const createStudyGroup = async (req, res) => {
   }
 };
 export const deleteStudyGroup = async (req, res) => {
+  //스터디 그룹 삭제
   try {
     const { groupId } = req.body._id;
     const deleteGroup = await StudyGroup.findByIdAndDelete(groupId);
@@ -71,6 +72,7 @@ export const deleteStudyGroup = async (req, res) => {
   }
 };
 export const viewMyGroup = async (req, res) => {
+  //내 스터디 보기
   try {
     const myId = req.session._id;
     const user = await User.findById(myId);
@@ -80,7 +82,7 @@ export const viewMyGroup = async (req, res) => {
       _id: { $in: user.studyGroup },
     });
     const allStudyGroupData = allStudyGroup.map((group) => ({
-      studyname : group.groupName,
+      studyname: group.groupName,
       members: group.members.length,
       maxCapacity: group.maxCapacity,
       isOnline: group.isOnline,
@@ -92,7 +94,7 @@ export const viewMyGroup = async (req, res) => {
       masterId: myId,
     });
     const masterStudyGroupData = masterStudyGroup.map((group) => ({
-      studyname : group.groupName,
+      studyname: group.groupName,
       members: group.members.length,
       maxCapacity: group.maxCapacity,
       isOnline: group.isOnline,
@@ -109,7 +111,21 @@ export const viewMyGroup = async (req, res) => {
   }
 };
 
+export const searchStudyGroup = async (req, res) => {
+  try {
+    console.log(req);
+    //테스트 로직(검색시 일단 있는 스터디 보여주기)
+    const testGroup = await StudyGroup.find();
+    return res
+      .status(200)
+      .json({ message: "스터디 검색 성공", studyGroup: testGroup });
+  } catch (error) {
+    res.status(500).json({ message: errors.SERVER_ERROR_MESSAGE });
+  }
+};
+
 export const joinStudyGroup = async (req, res) => {
+  //스터디 그룹 신청하기
   try {
     const user = req.session._id;
     const { groupId } = req.body._id;
@@ -135,6 +151,7 @@ export const joinStudyGroup = async (req, res) => {
 };
 
 export const inquiryApplicationList = async (req, res) => {
+  //방장이 신청자 조회 하는 로직
   try {
     const { groupId } = req.body._id;
     const studyGroup = await StudyGroup.findById(groupId);
@@ -149,6 +166,7 @@ export const inquiryApplicationList = async (req, res) => {
   }
 };
 export const acceptStudyGroup = async (req, res) => {
+  //스터디 신청한사람 수락 로직
   try {
     const { groupId, userId } = req.body;
     const studyGroup = await StudyGroup.findById(groupId);
