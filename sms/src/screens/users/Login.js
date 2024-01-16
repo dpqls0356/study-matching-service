@@ -69,15 +69,15 @@ const Error = styled.div``;
 
 function Login() {
   const {user,changeUser} = useContext(UserContext);
+  const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
   const [idError,setIdError] = useState(false);
   const [passwordError,setPasswordError] = useState(false);
-  const {loggedIn,changeLoggedIn} = useContext(LoggedInContext);
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI }&response_type=code`;
   const google_redirect_uri = "http://localhost:3000/oauth2/redirect";
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${google_redirect_uri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email`;
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const postJoin = async (data) => {
+  const postLogin = async (data) => {
     setIdError(false);
     setPasswordError(false);
     const { userid, password } = data;
@@ -99,10 +99,9 @@ function Login() {
             withCredentials: true
           });
           // console.log("userInfo: "+JSON.stringify(userInfo.data.username));
-          window.localStorage.setItem('username',userInfo.data.username);
-          window.localStorage.setItem('userid',userInfo.data.userid);
           // 데이터가 있으면
-          changeUser(userInfo);
+          changeUser(userInfo.data.username);
+          console.log(user,loggedIn);
           navigate("/");
         }
         // 올바른 유저가 세션에 없다면 ?
@@ -126,7 +125,7 @@ function Login() {
 
   return (
     <Wrapper>
-      <LoginForm onSubmit={handleSubmit(postJoin)}>
+      <LoginForm onSubmit={handleSubmit(postLogin)}>
       {idError ? <Error>존재하지않는 아이디입니다.</Error> : null}
         <InputDiv>
           <Label htmlFor="userid">아이디</Label>

@@ -88,6 +88,7 @@ function App() {
     setUser(addUser);
   }
   useEffect(async()=>{
+    console.log(user,loggedIn);
     try{
       const data = await axios.get(`${BASE_URL}/user/userinfo`,
       { withCredentials: true});
