@@ -118,7 +118,8 @@ export const kakaoLoginUser = async (req, res) => {
 
 export const googleLogin = async (req, res) => {
   try {
-    const { email, id } = req.body;
+    const { email, id } = req.body.senddata;
+    console.log(email,id);
     const existingUser = await User.findOne({
       email,
     });
@@ -128,7 +129,7 @@ export const googleLogin = async (req, res) => {
       req.session.username = existingUser.username;
       return res
         .status(201)
-        .json({ message: "구글 로그인 성공", user: existingUser });
+        .json({ message: "구글 로그인 성공", user: existingUser.username });
     } else {
       const password = await bcrypt.hash(new Date().toString(), 10);
       const googleUser = {
@@ -141,11 +142,14 @@ export const googleLogin = async (req, res) => {
         profileImg: "defaultProfileImg.png",
       };
       const newUser = await User.create(googleUser);
-      req.session._id = newUser._id;
-      req.session.username = newUser.username;
+      const existingUser = await User.findOne({
+        userid:newUser.userid,
+      });
+      req.session._id = existingUser._id;
+      req.session.username = existingUser.username;
       return res
         .status(201)
-        .json({ message: "구글 로그인 성공", user: googleUser });
+        .json({ message: "구글 로그인 성공", user: googleUser.username});
     }
   } catch (error) {
     //에러 처리하기
