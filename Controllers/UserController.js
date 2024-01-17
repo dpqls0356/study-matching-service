@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 
 export const joinUser = async (req, res) => {
   const { userid, email, gender } = req.body;
-  console.log(req.body);
   try {
     const [existingUserId, existingEmail] = await Promise.all([
       User.findOne({ userid }),
@@ -30,7 +29,6 @@ export const joinUser = async (req, res) => {
         .json({ message: "회원가입 성공", user: newImgUser });
     } else {
       //회원가입 시 사진 선택 안한 경우
-      console.log("a");
       const defaultImgUser = await User.create(req.body);
 
       return res
@@ -38,7 +36,6 @@ export const joinUser = async (req, res) => {
         .json({ message: "회원가입 성공", user: defaultImgUser });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "서버 에러" });
   }
 };
@@ -83,7 +80,6 @@ export const kakaoLoginUser = async (req, res) => {
       email,
     });
     if (existingUser) {
-      //세션추가
       req.session._id = existingUser._id;
       req.session.username = existingUser.username;
       //카카오나 구글이메일로 회원가입하고 소셜 로그인시 기존 정보로 로그인 시키고 유저 정보를 줌
@@ -105,21 +101,25 @@ export const kakaoLoginUser = async (req, res) => {
       };
 
       const newUser = await User.create(kakaoUser);
-      req.session._id = newUser._id;
-      req.session.username = newUser.username;
+      //newUser에 user의 _id가 없어서 existingUser를 DB로부터 받아옴
+      const existingUser = await User.findOne({
+        userid:newUser.userid,
+      });
+      req.session._id = existingUser._id;
+      req.session.username = existingUser.username;
       return res
         .status(201)
-        .json({ message: "카카오 로그인 성공", user: kakaoUser });
+        .json({ message: "카카오 로그인 성공",username:existingUser.username});
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "서버오류" });
   }
 };
 
 export const googleLogin = async (req, res) => {
   try {
-    const { email, id } = req.body;
+    const { email, id } = req.body.senddata;
+    console.log(email,id);
     const existingUser = await User.findOne({
       email,
     });
@@ -129,7 +129,7 @@ export const googleLogin = async (req, res) => {
       req.session.username = existingUser.username;
       return res
         .status(201)
-        .json({ message: "구글 로그인 성공", user: existingUser });
+        .json({ message: "구글 로그인 성공", user: existingUser.username });
     } else {
       const password = await bcrypt.hash(new Date().toString(), 10);
       const googleUser = {
@@ -142,24 +142,22 @@ export const googleLogin = async (req, res) => {
         profileImg: "defaultProfileImg.png",
       };
       const newUser = await User.create(googleUser);
-      req.session._id = newUser._id;
-      req.session.username = newUser.username;
+      const existingUser = await User.findOne({
+        userid:newUser.userid,
+      });
+      req.session._id = existingUser._id;
+      req.session.username = existingUser.username;
       return res
         .status(201)
-        .json({ message: "구글 로그인 성공", user: googleUser });
+        .json({ message: "구글 로그인 성공", user: googleUser.username});
     }
   } catch (error) {
     //에러 처리하기
-    console.log(error);
     return res.status(500).json({ message: "서버 에러" });
   }
 };
 
 export const userinfo = async (req, res) => {
-  console.log("userinfo print");
-  console.log("======================");
-  console.log(req.session);
-  console.log("======================");
   if (!req.session._id) {
     return res.status(404).json({ message: "해당 유저가 존재하지않습니다." });
   } else {
@@ -173,8 +171,8 @@ export const userinfo = async (req, res) => {
 export const logoutUser = async (req, res) => {
   var session = req.session;
   console.log("-----------logout session---------------");
-  console.log(req.session);
   req.session.destroy();
+  res.status(200).json({});
 };
 
 export const editProfile = async (req, res) => {
@@ -183,7 +181,6 @@ export const editProfile = async (req, res) => {
     //const user = await User.findById(req.session._id);
     const _id = req.session._id;
     let { username, password, profileImg } = req.body;
-    console.log(req.body);
     if (password) {
       password = await bcrypt.hash(password, 10);
     }
@@ -199,7 +196,6 @@ export const editProfile = async (req, res) => {
     req.session.username = username;
     res.status(200).json({ message: "프로필 수정 성공", user: updateUser });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       error: "프로필을 수정하는 중에 오류가 발생했습니다. 다시 시도해 주세요",
     });
@@ -208,7 +204,6 @@ export const editProfile = async (req, res) => {
 export const getEditUserInfo = async (req, res) => {
   if (req.session._id) {
     const senddata = await User.findOne({ _id: req.session._id });
-    console.log(senddata);
 
     return res.status(200).json({ senddata });
   } else {

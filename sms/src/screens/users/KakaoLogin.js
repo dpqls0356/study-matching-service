@@ -41,9 +41,10 @@ function KakaoLogin(){
             try{
                 const response = await axios.post(`${BASE_URL}/user/login/kakao`,{
                     data
-                });
+                },{withCredentials: true});
                 if(response.status===201){
                   changeLoggedIn(true);
+                  changeUser(response.data.username);
                   navigate("/");
                 }
             }
